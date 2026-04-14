@@ -10,7 +10,7 @@ The scheduled task that runs the full content waterfall on Monday, Wednesday, an
 2. **Better content quality.** More time between deliveries = more signal accumulation in OctoLens/Slack = stronger subject candidates per delivery.
 3. **Audience fatigue.** LinkedIn algorithm throttles authors who post too often with mediocre content. 3 strong posts/week beats 5 okay ones.
 4. **Recovery time.** If Monday's post missed, Wednesday catches up without the "broken streak" guilt trip.
-5. **Cost efficient.** Fewer Bright Data scrapes, OctoLens queries, Slack API calls. Lower operational cost per champion.
+5. **Cost efficient.** Fewer feeder reads, fewer Slack API calls, lower Base44 credit burn per champion.
 
 ## How To Create The Task
 

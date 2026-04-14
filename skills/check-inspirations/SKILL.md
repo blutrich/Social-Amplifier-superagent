@@ -11,23 +11,17 @@ Phase 2 of the waterfall. Finds what the champion's inspirations posted in the l
 
 After `search-slack-context` (Phase 1), before `load-voice` (Phase 3).
 
-## Source Chain (in priority order)
+## Single Source: Shared Slack Feed Channel
 
-Read `knowledge/inspiration-seeds.json` → `social_amplifier_feed` for the current channel config. Then fall through the source chain:
+Read `knowledge/inspiration-seeds.json` → `social_amplifier_feed` for the current channel config.
 
-1. **Primary — Shared Slack feed channel** (`social-champions-octolens-feed`, ID `C0ATMPHHM40`)
-   Two feeder systems post into this one channel: (a) OctoLens posts social mentions, (b) an operator-run Base44 "Apify Feeder" app posts LinkedIn + X profile scrapes for the shared inspirations list. Every champion's agent reads from here. **Champions never hold an Apify token or OctoLens token — those secrets live server-side in the feeder systems only.**
+**The only source is** `#social-champions-octolens-feed` (channel ID `C0ATMPHHM40`). Two feeder systems post into it server-side:
+- **OctoLens** posts brand mentions, competitor signals, and tagged social content
+- **Apify Inspiration Feeder** (a separate Base44 app, app id `69de4f68f7667dfd280537e5`) posts LinkedIn + X profile scrapes for the shared inspirations list on a 6h cron
 
-2. **Fallback 1 — Per-champion inspirations list as filter keywords**
-   The champion's `champion_inspirations` list (from Interview answer #6) is NOT a scraping target for this agent. It's a filter: when matching messages in the Slack feed, boost relevance for authors in this list. If the feed has zero hits for those authors this week, the skill returns `status: partial` and Phase 4 falls back to Slack-only grounding.
+Champions read the channel via their own Slack connector. **No champion agent holds an Apify token, an OctoLens token, or calls web search.** All scraping runs server-side in the feeders.
 
-3. **Fallback 2 — OctoLens MCP direct** (only if `mcp__octolens__list_mentions` is available to this agent)
-   Most champions won't have OctoLens MCP configured; this is legacy/optional.
-
-4. **Fallback 3 — Web search**
-   Last resort. Low signal, but never fails the waterfall.
-
-**This agent does NOT have access to an Apify token. Never call Apify directly from this skill.** If the Slack feed is empty, accept partial status — don't try to re-scrape.
+The champion's `champion_inspirations` list (from Interview answer #6) is a **filter**, not a scraping target. It boosts relevance for matching authors when reading feed messages. If the feed has no messages matching the inspirations this week, return `status: partial` — do not attempt any other source.
 
 ## Primary Source: Shared Slack Feed
 
@@ -69,52 +63,18 @@ The messages in this channel are OctoLens mentions posted by OctoLens' Slack app
 
 Keep the top 5 after scoring.
 
-## Fallback 1: Per-Champion Inspirations via Apify
+## Fallback: Phase 1 signals only
 
-Triggered when:
-- The Slack feed returned 0 relevant mentions
-- OR the champion has specific inspirations not covered by the feed (e.g. niche accounts)
+If the shared feed channel returns zero matches for the champion's inspirations this week, **do not** attempt any other source. The champion agent does NOT:
+- Hold an Apify token (Apify runs server-side in the Feeder app — a separate Base44 app)
+- Hold an OctoLens token (OctoLens posts directly into the feed channel; no direct MCP call)
+- Call web search during scheduled runs (web search produces low-signal content that poisons Voice Guardian scoring)
 
-For each inspiration in Memory `champion_inspirations`:
+Instead, return `status: partial` with `source_used: slack_feed` and an empty `top_mentions` array. Phase 4 then generates variations using **only** the Phase 1 Slack signals. No echo-angle draft, just personal-experience and reflection angles grounded in the champion's own Slack activity.
 
-```
-# LinkedIn
-Apify actor: apimaestro/linkedin-profile-posts
-Input: { "username": "{handle}", "limit": 10 }
+**Why no fallback scraping:** the whole v3 architecture moves scraping server-side to keep champion agents stateless and tokenless. Re-adding a per-champion scrape path would contradict that. If the feed is empty, the correct answer is honesty (partial output), not fabrication from alternate sources.
 
-# X / Twitter
-Apify actor: apidojo/tweet-scraper
-Input: { "twitterHandles": ["{handle}"], "maxItems": 10, "sort": "Latest" }
-```
-
-Requires `APIFY_TOKEN` in Base44 Settings → Secrets & Keys. If not set, skip to Fallback 3.
-
-Cache per-handle for 24 hours in Memory to avoid repeat runs across the day:
-```
-cache_key: inspiration:{handle}:{YYYY-MM-DD}
-```
-
-## Fallback 2: OctoLens MCP Direct
-
-Only run if `mcp__octolens__list_mentions` is available. Single call:
-
-```
-mcp__octolens__list_mentions(
-  filters={ "startDate": "{7_days_ago_ISO}" },
-  limit=100
-)
-```
-
-Filter response by `author` matching the champion's inspirations. Most champions won't have this connector — treat as optional.
-
-## Fallback 3: Web Search
-
-For any inspiration still without activity data, run a web search:
-```
-web_search("{inspiration_name} linkedin OR twitter last 7 days")
-```
-
-Extract 1-2 recent post mentions from the results. Low signal quality — flag in output `status: partial`.
+**If the feed channel is unreachable entirely** (agent not a member, channel archived, Slack outage), return `status: error` with the specific reason. Phase 4 still runs on Phase 1 signals. The error surfaces in the Phase D Summary gaps section so the operator knows to fix the Feeder.
 
 ## Banned Inspirations Check
 
@@ -127,16 +87,17 @@ Never include banned inspirations in output. Log skips with reason.
 
 ## When To Skip The Phase Entirely
 
-- Slack feed empty AND no `champion_inspirations` in Memory AND no `APIFY_TOKEN` → return `status: empty`, waterfall continues without inspiration grounding (write-content still uses Slack signals from Phase 1)
-- All sources errored → return `status: error`, waterfall continues with Phase 1 data only
-- Better partial than fabricated. Never invent posts.
+- Slack feed has 0 messages in the last 7 days → return `status: empty`, waterfall continues with Phase 1 signals only
+- Slack feed has messages but 0 match the champion's inspirations list → return `status: partial`, same fallback
+- Slack feed unreachable (channel not joined, archived, API error) → return `status: error` with reason, waterfall continues with Phase 1 data only, operator notified via Phase D Summary gaps
+- Better partial than fabricated. Never invent posts. Never call web search to fill the gap.
 
 ## Output Format
 
 ```yaml
 inspiration_activity:
   status: ok | partial | empty | error
-  source_used: slack_feed | champion_apify | octolens | web_search | mixed
+  source_used: slack_feed
   feed_messages_read: 47
   inspirations_with_activity: 3
 
@@ -156,7 +117,7 @@ inspiration_activity:
 
   inactive_inspirations:
     - name: "Mike Krieger"
-      reason: "No mentions in feed, not in champion list, no APIFY_TOKEN"
+      reason: "No mentions in feed this week"
 ```
 
 ## Integration With Phase 4 (Write Content)

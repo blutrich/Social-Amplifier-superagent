@@ -243,7 +243,7 @@ Two distinct flows. Onboarding happens **once**. The waterfall runs **Mon/Wed/Fr
 | `knowledge/voice-guardian-checklist.md` | 10-point quality scoring rubric |
 | `knowledge/universal-ai-tells.md` | 80+ banned patterns (em dashes, "thrilled to announce", etc.) |
 | `knowledge/platform-rules.md` | LinkedIn + X format specs |
-| `knowledge/waterfall-overview.md` | How the 6 phases connect |
+| `knowledge/waterfall-overview.md` | How the 7 phases connect |
 | `knowledge/inspiration-seeds.json` | Persona → influencer mapping with banned competitors |
 | `knowledge/champion-tone-template.md` | Template for YOUR personal tone-of-voice file |
 | `skills/*.md` | The 7 skills implementing the waterfall phases |

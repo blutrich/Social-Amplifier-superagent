@@ -45,9 +45,9 @@ image_suggestion:
 ```
 
 **Generator flow:**
-1. `python3 scripts/generate_image.py "[description]" --style illustration -o base.png`
-2. `python3 scripts/composite_social.py text-card --headline "$100M ARR" --subtext "[subtitle]" --bg warm-grain -o final.png`
-3. Return `final.png` as the image to attach
+1. Call Base44's built-in image generation tool with a prompt combining `description` + `subtitle` + brand guidance: "Clean minimal illustration, warm palette, Base44 brand style. {description}. Overlay headline '{subtitle}' if a headline slot is present."
+2. The platform returns an image file or URL — no scripts, no Python, no API key.
+3. Attach the returned image to the draft object so `deliver-via-slack` sends it with the LinkedIn copy.
 
 ### feature_screenshot (manual — skill just formats the prompt)
 

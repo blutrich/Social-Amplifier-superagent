@@ -230,6 +230,6 @@ DM @oferbl in Base44 Slack if:
 - Tests 1-4 fail and you can't resolve via the troubleshooting above
 - The voice match never improves no matter how much you update the profile
 - The Voice Guardian rejects everything for 3+ consecutive days
-- You need help configuring OctoLens or Bright Data MCP
+- The shared `#social-champions-octolens-feed` channel isn't reachable and the Apify Feeder App needs re-wiring
 
 For general questions, ask your Superagent first — it knows the install runbook and can guide you.

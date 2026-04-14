@@ -1,0 +1,27 @@
+# Banned terms — anything that appears here must NOT appear in bundle files
+# except in CHANGELOG.md or commit messages. Each line is a literal substring.
+# Why: these reference deprecated tools/patterns that the v3 architecture replaced.
+# If you're intentionally bringing one of these back, remove it from this file first.
+
+# Deprecated scraping path — replaced by Apify Inspiration Feeder (server-side)
+Bright Data
+brightdata
+BRIGHTDATA
+BRIGHTDATA_TOKEN
+
+# Deprecated per-champion secret — APIFY_TOKEN now lives only in the Feeder app
+# (We keep it allowed in docs/setup-apify-feeder.md which documents the Feeder itself.)
+# Grep exclusion handled by the lint script, not this file.
+
+# Deprecated phase count — waterfall is 7 phases since generate-image Phase 5.5
+6-phase waterfall
+6 phases connect
+six-phase
+six phases
+
+# Deprecated placeholder — use {champion_dm_channel_id} or resolve at runtime
+D0XXXXXX
+
+# Deprecated shell-based image generation — Base44 has built-in image tool
+python3 scripts/generate_image
+python3 scripts/composite_social

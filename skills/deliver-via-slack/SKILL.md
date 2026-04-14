@@ -176,7 +176,7 @@ delivery_result:
   template_used: daily-digest
   variations_sent: 2
   message_ts: "1776055326.645449"
-  channel_id: "D0XXXXXX"
+  channel_id: "{champion_dm_channel_id}"
   failure_reason: null
   log_path: "content-history/2026-04-13-daily-digest.md"
 ```
@@ -190,7 +190,7 @@ After successful send, write to `content-history/{YYYY-MM-DD}-{topic-slug}.md`:
 champion_id: dor-blech
 date: 2026-04-13
 delivered_at: 2026-04-13T09:00:12+03:00
-dm_channel: D0XXXXXX
+dm_channel: {champion_dm_channel_id}
 template: daily-digest
 trigger: scheduled
 variations_delivered: 2

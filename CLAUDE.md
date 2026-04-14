@@ -36,13 +36,15 @@ Social-Amplifier-superagent/
 ├── CLAUDE.md                       # This file
 ├── identity-template.md            # Per-champion identity (name, role, timezone)
 ├── soul.md                         # Behavioral principles (same for all champions)
-├── connectors-required.md          # Slack mandatory, OctoLens + Bright Data optional
-├── verify-install.md               # 10-test verification checklist
+├── connectors-required.md          # Slack mandatory (incl. #social-champions-octolens-feed read)
+├── verify-install.md               # 11-test verification checklist
+├── docs/
+│   └── setup-apify-feeder.md       # One-time operator runbook for the server-side Apify Feeder app
 ├── knowledge/
 │   ├── voice-guardian-checklist.md # 10-point quality scoring rubric
 │   ├── universal-ai-tells.md       # 80+ banned patterns
 │   ├── platform-rules.md           # LinkedIn + X format specs
-│   ├── waterfall-overview.md       # How the 6 phases connect
+│   ├── waterfall-overview.md       # How the 7 phases connect
 │   ├── inspiration-seeds.json      # Persona → influencer mapping (Anthropic auto-include, competitors banned)
 │   └── champion-tone-template.md   # Template for per-champion voice profile
 ├── skills/
@@ -257,10 +259,10 @@ If you change soul.md, test with a fresh Superagent install to verify the person
 | Dependency | Purpose | Required | Fallback |
 |------------|---------|----------|----------|
 | Base44 Superagent | The runtime | Yes | None - this whole bundle assumes Base44 |
-| Slack workspace | Source signals + delivery | Yes | None - Slack is mandatory |
-| OctoLens MCP | Phase 2 inspiration activity | No | Bright Data scrape, then web search |
-| Bright Data MCP | Phase 2 fallback + champion onboarding | No | Web search (lower quality) |
-| Google Gemini API | Phase 6+ image generation | No | Skip images, text-only delivery |
+| Slack workspace (including #social-champions-octolens-feed read access) | Source signals, Phase 2 feed read, delivery | Yes | None - Slack is mandatory |
+| Apify Inspiration Feeder (separate Base44 app) | Posts LinkedIn/X scrapes into the shared feed channel | Yes (operator-side, one-time) | None - Phase 2 degrades to Phase 1 signals only |
+| OctoLens (external) | Posts brand mentions into the same shared feed channel | Recommended | Apify Feeder alone still produces feed content |
+| Base44 built-in image tool | Phase 5.5 image generation | Yes (native, no API key) | Skip images, text-only delivery |
 | Anthropic models | All generation (handled by Base44) | Yes | Auto-selected by Base44 |
 
 ## Per-Persona OctoLens View Mapping
@@ -341,8 +343,8 @@ These are decisions the operator (Ofer Blutrich) has made in conversation. Futur
 - **Schedule defaults to 3x/week.** Changed from 5x/week based on realistic champion behavior.
 - **Anthropic team always included as inspirations.** Tier-1 priority for relevant personas.
 - **Competitor CEOs are banned via shared/inspiration-seeds.json.** Hard block, no overrides.
-- **Image generation is opt-in per champion.** Defaults to text-only because most posts perform better that way.
-- **Bright Data is the only reliable LinkedIn/X scraper.** WebFetch hits 999/402 errors. OctoLens is preferred when authors are indexed.
+- **Image generation is Phase 5.5 of the waterfall**, auto-run for every Voice Guardian-approved draft using Base44's built-in image tool. No API key required.
+- **LinkedIn/X scraping happens server-side in the Apify Inspiration Feeder app.** Champion Superagents never hold an Apify token. They read the shared `#social-champions-octolens-feed` channel that the Feeder posts into.
 - **Personal champion data is gitignored.** Real profiles, content history, and eval workspaces never go into the public repo.
 
 ## When In Doubt
