@@ -12,11 +12,14 @@ PHASE 1: SEARCH SLACK CONTEXT
   - Filter, score, return 3-10 fresh signals
 
 PHASE 2: CHECK INSPIRATION ACTIVITY
-  - Load champion's inspirations (3-5 people they follow)
-  - For each: check what they posted on LinkedIn/X in the last 7 days
-  - Use OctoLens for indexed authors (cheap)
-  - Use Bright Data scrape for non-indexed (expensive, cached daily)
-  - Return per-inspiration recent posts + suggested response angles
+  - Read the shared #social-champions-octolens-feed Slack channel (last 7 days)
+  - Two feeder systems post into that channel: OctoLens (brand mentions) and
+    the Apify Inspiration Feeder app (LinkedIn + X profile scrapes)
+  - Champion never holds an Apify or OctoLens token — all scraping runs
+    server-side in the feeder systems
+  - Filter feed messages against the champion's inspirations list (from
+    Interview answer #6) and persona defaults, boost relevance for matches
+  - Return top 5 mentions + suggested response angles
 
 PHASE 3: LOAD CHAMPION VOICE
   - Read champion's identity, tone-of-voice, style preferences, rules
@@ -89,8 +92,8 @@ Total: ~45-90 seconds per champion per generation.
 | Failure | Recovery |
 |---------|----------|
 | Slack MCP down | Skip Phase 1, continue with inspirations only |
-| OctoLens MCP down | Skip OctoLens in Phase 2, fall back to Bright Data |
-| Bright Data quota exhausted | Use cached inspiration data from earlier in day |
+| Shared feed channel empty or unreachable | Phase 2 returns `status: partial`, Phase 4 uses Phase 1 signals only |
+| Apify Feeder App not running | Fewer LinkedIn/X scrapes reach the feed; operator alert, no champion impact |
 | All variations score < 7 | Drop the day, log "no shippable content" |
 | Slack DM send fails | Preserve drafts in Memory, retry on next run |
 | Champion has no Slack history | Phase 1 returns empty, agent proceeds with Phase 2 only |

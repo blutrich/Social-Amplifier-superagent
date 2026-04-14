@@ -8,7 +8,7 @@ A bundle of Base44 Superagent configuration files that turns any new Superagent 
 
 **Companion repo:** [Social-Amplifier-agent](https://github.com/blutrich/Social-Amplifier-agent) — same logic packaged as a Claude Code plugin instead of Base44 Superagent. Use that one for operator-driven installs in Claude Code.
 
-## Core Concept: The 6-Phase Waterfall
+## Core Concept: The 7-Phase Waterfall
 
 Every content generation runs this exact sequence:
 

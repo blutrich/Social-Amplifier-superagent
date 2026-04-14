@@ -6,14 +6,15 @@ Connectors your Base44 Superagent needs to run the Social Amplifier waterfall.
 
 ### 1. Slack (mandatory)
 
-**Why:** Read your messages for Phase 1 (Slack context), send DMs for Phase 6 (delivery), receive replies for the feedback trigger.
+**Why:** Read your messages for Phase 1 (Slack context), read the shared `#social-champions-octolens-feed` channel for Phase 2 (inspirations), send DMs for Phase 6 (delivery), receive replies for the feedback trigger.
 
 **Permissions needed:**
-- Read messages in channels you're a member of
+- Read messages in channels you're a member of (incl. the shared feed channel)
 - Read your own DMs
 - Search messages
 - Send messages to your own DM
 - Read channel list
+- Join public channels (`conversations.join`) — needed so the agent can auto-join the feed channel during install
 
 **How to connect:**
 1. In your Superagent, go to **Brain → Integrations → Connectors**
@@ -22,39 +23,29 @@ Connectors your Base44 Superagent needs to run the Social Amplifier waterfall.
 4. Authorize for your workspace
 5. Set permissions to read + send for your own DMs
 
-**Verify:** Send your Superagent: "Read my own Slack profile and tell me my display name." If it returns your name, Slack is connected.
+**Shared feed channel membership:** during install Step 6, the agent auto-joins `#social-champions-octolens-feed` (ID `C0ATMPHHM40`) via `conversations.join`. If the call fails (e.g. private channel or insufficient scope), the Phase D Summary flags it as a gap and falls back to per-champion inspirations from Interview answer #6.
+
+**Verify:** Send your Superagent: "Read my own Slack profile and tell me my display name, then read the last 5 messages in #social-champions-octolens-feed." If both work, Slack is fully wired.
+
+## NOT Required Per-Champion: Apify
+
+**Important:** champions do NOT need an Apify token. The Apify API token is never given to champion Superagents.
+
+Apify profile scraping (LinkedIn + X) runs inside a separate **Base44 Feeder App** built once by operations. That app:
+- Holds `APIFY_TOKEN` in its own env vars
+- Runs `apimaestro/linkedin-profile-posts` and `apidojo/tweet-scraper` on a shared inspirations list 3x per day
+- Posts new items into `#social-champions-octolens-feed` formatted like OctoLens mentions
+- Dedupes so the same post never hits the channel twice
+
+Champion agents read from the Slack channel only — single source, no secrets. See `docs/setup-apify-feeder.md` for the Feeder App runbook.
 
 ## Recommended Connectors
 
-### 2. OctoLens (recommended for Phase 2)
+### 2. OctoLens MCP (optional — legacy direct access)
 
-**Why:** Pre-indexed social mentions across LinkedIn, Twitter, Reddit, Dev.to, etc. Used in Phase 2 to check what your inspirations are posting this week.
+**Why:** Direct MCP access to OctoLens as a per-champion fallback. Most champions won't need this because the shared `#social-champions-octolens-feed` channel already delivers OctoLens mentions via Slack. Keep for workspaces that want a direct query path.
 
-**Setup:**
-
-OctoLens is an external MCP server, not a built-in Base44 connector. You configure it via the Superagent's MCP configuration:
-
-1. Get your OctoLens API token from your OctoLens dashboard
-2. In your Superagent, go to **Settings → Secrets & Keys**
-3. Add: `OCTOLENS_TOKEN` = `your-token-here`
-4. Send your Superagent in chat: "Connect to OctoLens MCP at https://app.octolens.com/api/mcp using my OCTOLENS_TOKEN secret"
-5. The Superagent configures the MCP connection and stores it in `.agents/mcp-config.json`
-
-**Verify:** Send your Superagent: "List my OctoLens saved views." If it returns the views (Brand Monitoring, Crisis Management, etc.), OctoLens is connected.
-
-### 3. Bright Data (recommended for Phase 2 fallback)
-
-**Why:** Scrape LinkedIn/X profiles when OctoLens doesn't index a specific inspiration. Used when an inspiration isn't in OctoLens's indexed authors.
-
-**Setup:**
-
-Bright Data is also an external MCP server.
-
-1. Get your Bright Data API token from your Bright Data dashboard
-2. Add to **Settings → Secrets & Keys**: `BRIGHTDATA_TOKEN` = `your-token-here`
-3. In chat: "Connect to Bright Data MCP using my BRIGHTDATA_TOKEN secret"
-
-**Verify:** Send your Superagent: "Use Bright Data to scrape this URL as markdown: https://news.ycombinator.com" — should return the HN front page.
+**Setup:** If you want it, follow the OctoLens MCP docs to add the MCP server to your Superagent. Not required for the standard install.
 
 ## Optional Connectors
 
@@ -64,7 +55,7 @@ Bright Data is also an external MCP server.
 
 **Setup:** See Base44 Superagent docs → Channels section. WhatsApp uses scan-to-connect, Telegram uses BotFather token.
 
-**Use case:** "Send my drafts via WhatsApp instead of Slack" → update the deliver-via-slack skill with WhatsApp routing.
+**Use case:** "Send my drafts via WhatsApp instead of Slack" → update the `deliver-via-slack` skill with alternate routing.
 
 ### 5. Google Drive (optional, for export)
 
@@ -81,9 +72,9 @@ Update Data: ON  (let agent update Memory and content history)
 Delete Data: OFF (never delete - only update)
 
 Connector Rules:
-- Slack: Only read your own messages and DM you. Never delete messages. Never post in shared channels without explicit permission.
-- OctoLens: Read-only.
-- Bright Data: Read-only. Use only for explicit URLs the agent provides.
+- Slack: Read your own messages, read #social-champions-octolens-feed, DM you.
+         Never delete messages. Never post in shared channels without explicit permission.
+- Apify: Read-only actor runs. No actor creation or modification.
 ```
 
 These rules keep the agent from doing anything destructive while still letting it operate the waterfall fully.
@@ -93,26 +84,17 @@ These rules keep the agent from doing anything destructive while still letting i
 Run this verification in chat:
 
 ```
-Verify all my connectors are working. Specifically:
-1. Test Slack: read my profile and tell me my name
-2. Test OctoLens: list my saved views
-3. Test Bright Data: fetch the title of https://news.ycombinator.com
-4. Test that you can DM me on Slack (send a test message saying "Connector test - ignore")
-
-Report which connectors passed and which failed.
+Verify Slack is working:
+1. Read my own profile and tell me my display name
+2. Read the last 5 messages in #social-champions-octolens-feed
+3. DM me a "connector test" message
+Report which passed and which failed.
 ```
 
-If all 4 pass, your agent is fully wired. If any fail, see the troubleshooting section in `verify-install.md`.
+If all three pass, the agent is fully wired. (Apify stays out of the champion agent — it runs inside the separate Base44 Feeder App.)
 
 ## Connector Costs
 
 - **Slack:** Free, no credit cost
-- **OctoLens:** Counts against your OctoLens monthly query limit (usually high)
-- **Bright Data:** ~$0.005-0.015 per scrape (cached daily so cost is bounded)
-
-For 1 champion with daily scheduled runs:
-- Slack: 5-10 calls/day = free
-- OctoLens: 3-5 calls/day = well within limits
-- Bright Data: 0-3 scrapes/day (cached) = ~$0.05-0.15/month per champion
-
-For a team of 10 champions: ~$1-2/month total Bright Data spend.
+- **Apify:** Pay-per-use. Runs inside the Feeder App, not per-champion. ~$15-30/month total for the whole team regardless of champion count.
+- **OctoLens (optional direct):** Counts against your OctoLens monthly query limit

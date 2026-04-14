@@ -7,19 +7,13 @@ How to test that your Social Amplifier Superagent is set up correctly and produc
 Send your Superagent in chat:
 
 ```
-List the skills you have access to. Specifically check that you have:
-- search-slack-context
-- check-inspirations
-- load-voice
-- write-content
-- voice-guard
-- deliver-via-slack
-- handle-feedback
+Run: find /app/.agents/skills -type f
+I expect exactly 8 SKILL.md files under .agents/skills/{name}/SKILL.md and nothing else. No loose .md files at the root. No scripts/ subfolders.
 ```
 
-**Expected:** Agent confirms all 7 skills are present.
+**Expected:** 8 paths, one per skill (search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback).
 
-**If failed:** Re-upload skills via **Brain → Integrations → Skills → Add**.
+**If failed:** Re-run Step 5 of BOOTSTRAP-PROMPT.md using `write_file` — do NOT use bash `cat >`, `cp`, or shell redirects. Those write to an ephemeral sandbox.
 
 ## Test 2: Knowledge Files Loaded
 
@@ -39,18 +33,19 @@ What knowledge files do you have? Confirm you can read:
 ## Test 3: Connectors Working
 
 ```
-Verify all my connectors:
-1. Slack: read my profile and tell me my display name
-2. OctoLens: list my saved views (if available)
-3. Bright Data: fetch https://news.ycombinator.com title (if available)
-4. Send me a Slack DM saying "Connector test - ignore"
+Verify Slack is working:
+1. Read my profile and tell me my display name
+2. Read the last 5 messages in #social-champions-octolens-feed (channel ID C0ATMPHHM40)
+3. Send me a Slack DM saying "Connector test - ignore"
 
-Report which connectors passed.
+Report which steps passed.
 ```
 
-**Expected:** Slack passes (mandatory). OctoLens and Bright Data may be skipped if not configured.
+**Expected:** All three pass. The shared feed channel is the Phase 2 source for inspirations — if the agent can't read it, the waterfall falls back to Phase 1 signals only.
 
-**If Slack failed:** Re-connect Slack in **Brain → Integrations → Connectors**. Make sure permissions include "send messages to your own DMs".
+**If Slack failed:** Re-connect Slack in **Brain → Integrations → Connectors**. Make sure permissions include "send messages to your own DMs" + `channels:history` for the feed channel.
+
+**If feed channel read failed (but other steps passed):** the agent isn't a member of `#social-champions-octolens-feed`. Ask your agent to run `conversations.join` on channel `C0ATMPHHM40`, or have an operator add @{your_handle} manually.
 
 ## Test 4: Voice Profile Loaded
 
@@ -157,7 +152,27 @@ If no scheduled task exists, run:
 Create the scheduled task per the instructions in tasks/daily-waterfall.md
 ```
 
-## Test 10: Banned Inspiration Block
+## Test 10: End-Of-Install Summary (Phase D)
+
+After the auto-pilot finishes and the dry-run drafts are displayed, the agent MUST send a final Summary message with five mandatory sections. Confirm the message you received contains:
+
+1. **What I learned about you** — voice summary (1 sentence), 3 real sample quotes from your Slack, banned words list, inspirations loaded
+2. **What's installed** — 8 skills, 7 knowledge files, Slack connected
+3. **What's scheduled** — Mon/Wed/Fri at 9am your timezone, first real delivery date, feedback listener active
+4. **How to correct me** — reply with 1/2/3, "not my style", "too formal", or paste past LinkedIn posts
+5. **What I can't do yet** — explicit list of gaps (e.g. "no LinkedIn scraping configured — voice confidence 7/10 until you share 2-3 past posts")
+
+**Expected:** All 5 sections are present and filled with real data (not placeholders).
+
+**If failed:** the agent skipped Phase D. Send:
+
+```
+You forgot the end-of-install Summary. Send it now with all 5 sections from BOOTSTRAP-PROMPT.md Phase D: What I learned, What's installed, What's scheduled, How to correct me, What I can't do yet. Include my real voice summary + 3 real quotes.
+```
+
+Trust-building relies on this message. Never ship an install without it.
+
+## Test 11: Banned Inspiration Block
 
 Verify the agent enforces banned competitor inspirations:
 

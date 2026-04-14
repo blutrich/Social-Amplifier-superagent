@@ -8,94 +8,46 @@ Personal social content agent for Base44 champions. Each champion gets their own
 
 You install this bundle into your own Base44 Superagent. From then on:
 
-- Every weekday at 9am local time, your agent runs a 6-phase content waterfall
+- Mon/Wed/Fri at 9am local time, your agent runs a 7-phase content waterfall
 - It searches your Slack for fresh feature signals + your recent messages
-- It checks what your inspirations are posting this week (LinkedIn + X)
+- It reads the shared `#social-champions-octolens-feed` channel to see what your inspirations posted this week
 - It loads your tone-of-voice rules
 - It generates 2-3 LinkedIn drafts in your specific voice
 - It scores them against the Voice Guardian (10-point quality gate, no AI tells)
-- It DMs you the approved drafts via Slack
+- It generates a branded image per approved draft using Base44's built-in image tool
+- It DMs you the approved drafts + images via Slack
 - You reply with feedback, the agent updates your voice profile
 
 Total daily effort from you: 30 seconds to read drafts + post the one you like.
 
-## Install (2 Minutes With Clone Repo, 10 Minutes Manual)
+## Install (5-7 Minutes, Zero Placeholders)
 
 ### Prerequisites
 
 - Base44 account (any tier)
-- Slack workspace access (to receive DMs from your agent)
-- LinkedIn profile (optional but recommended — better voice profiling)
+- Slack workspace access (to receive DMs + read the shared feed channel)
+- Operator-side only (one-time, not per champion): the Apify Inspiration Feeder App running. See `docs/setup-apify-feeder.md`.
 
 ---
 
-### Option A: One-Message Install (Recommended)
+### The Install Flow (Interview → Auto-pilot → Summary)
 
-Base44 Superagents can clone GitHub repos directly. This is the fastest install:
-
-**Step 1:** Create a new Superagent
-1. Log in to [Base44](https://app.base44.com)
-2. Click **Superagents** in the sidebar
-3. Click **Create new Superagent**
-4. Name it (e.g., "DorAgent" or "MySocial")
-
-**Step 2:** Send this single message:
+1. Create a new Superagent in [Base44](https://app.base44.com)
+2. Paste this **exact** short message (no placeholders, no edits):
 
 ```
-Clone https://github.com/blutrich/Social-Amplifier-superagent and configure yourself based on the files there.
-
-Read the README.md and BOOTSTRAP-PROMPT.md first to understand your role.
-
-Then:
-1. Set your Identity from identity-template.md (ask me for my name, role, timezone)
-2. Set your Soul from soul.md
-3. Upload all knowledge/ files as Knowledge files
-4. Add all skills/ files as Skills
-5. Walk me through connecting Slack
-6. Walk me through OctoLens and Bright Data MCP setup (use my secrets if I have them)
-7. Create the daily-waterfall scheduled task per tasks/daily-waterfall.md
-8. Create the feedback-on-reply trigger per tasks/feedback-on-reply.md
-9. Run the verify-install.md tests and report results
-
-Walk me through each step and ask for the info you need.
+Install Social Amplifier for me. Follow BOOTSTRAP-PROMPT.md in the cloned repo from https://github.com/blutrich/Social-Amplifier-superagent. Start with the Interview phase (ask me personal questions first, one message, preview the steps and time estimate), then auto-pilot all 12 install steps without pausing, then deliver the dry-run drafts, then send me the end-of-install Summary. Do not execute any install step until I reply to the Interview.
 ```
 
-The Superagent reads the repo, configures itself, asks you for your name and Slack info, sets up everything, and runs the verification tests. Total time: 2-5 minutes.
+3. The agent clones the repo, reads `BOOTSTRAP-PROMPT.md`, and sends you **one Interview message**: a 5-7 minute time estimate, the 12-step preview, and 6 personal questions (name, role, persona, timezone, Slack handle, inspirations with "skip" fallback).
+4. You reply with your 6 answers in one message, then ignore it.
+5. The agent auto-pilots all 12 install steps with ✅ progress markers.
+6. It shows you 2-3 real LinkedIn drafts from a dry-run.
+7. It sends you a final **Summary**: what it learned about you (voice + 3 quotes + banned words + inspirations), what's installed, what's scheduled, how to correct it, and any gaps.
 
----
+From paste to Summary: 5-7 minutes. Zero placeholder confusion, no manual intervention after you answer the Interview.
 
-### Option B: Manual Install (10 Minutes)
-
-If your Superagent can't clone the repo, follow these steps manually:
-
-**Step 1:** Create the Superagent (same as above)
-
-**Step 2:** Configure Identity
-In **Brain → Knowledge → Identity**, paste `identity-template.md` and fill in your name, role, timezone.
-
-**Step 3:** Configure Soul
-In **Brain → Knowledge → Soul**, paste `soul.md` (same for all champions).
-
-**Step 4:** Upload Knowledge Files
-In **Brain → Knowledge → Knowledge files**, upload all 6 files from `knowledge/`:
-- `voice-guardian-checklist.md`
-- `universal-ai-tells.md`
-- `platform-rules.md`
-- `waterfall-overview.md`
-- `inspiration-seeds.json`
-- `champion-tone-template.md` (fill in your own info)
-
-**Step 5:** Add Skills
-In **Brain → Integrations → Skills**, click **Add** and upload all 7 skill files from `skills/`.
-
-**Step 6:** Connect Tools
-In **Brain → Integrations → Connectors**, connect Slack (required) and optionally OctoLens + Bright Data. See `connectors-required.md`.
-
-**Step 7:** Create Tasks
-In chat, ask your Superagent to create the daily task per `tasks/daily-waterfall.md` and the feedback trigger per `tasks/feedback-on-reply.md`.
-
-**Step 8:** Verify
-Run the tests in `verify-install.md`.
+See `BOOTSTRAP-PROMPT.md` for the full protocol. See `RECOVERY-PROMPTS.md` if something goes wrong mid-install.
 
 ## How It Works
 

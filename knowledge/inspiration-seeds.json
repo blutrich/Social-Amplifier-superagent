@@ -1,8 +1,16 @@
 {
   "_meta": {
-    "version": 2,
-    "updated_at": "2026-04-13",
+    "version": 3,
+    "updated_at": "2026-04-14",
     "description": "Curated persona-to-inspiration seed list. Used during Phase 2 of the waterfall to populate inspirations for new champions. Edit freely as the landscape shifts."
+  },
+  "social_amplifier_feed": {
+    "description": "Shared Slack channel where OctoLens posts social mentions for all champion agents to read. Primary source for Phase 2 (check-inspirations). Public channel — agents auto-join on install via conversations.join.",
+    "channel_id": "C0ATMPHHM40",
+    "channel_name": "social-champions-octolens-feed",
+    "workspace": "base44workspace.slack.com",
+    "lookback_hours": 168,
+    "fallback_order": ["champion_inspirations", "octolens_mcp", "apify", "web_search"]
   },
   "always_include": {
     "anthropic_team": {
