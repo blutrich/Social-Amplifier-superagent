@@ -81,7 +81,7 @@ Skills to install (all 8):
 - voice-guard
 - deliver-via-slack
 - handle-feedback
-- generate-image (optional, skip if no Google API key)
+- generate-image (uses Base44's built-in image tool — no API key needed)
 
 Verify layout:
   find /app/.agents/skills -type f
