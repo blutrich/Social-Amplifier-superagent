@@ -51,48 +51,186 @@ See `BOOTSTRAP-PROMPT.md` for the full protocol. See `RECOVERY-PROMPTS.md` if so
 
 ## How It Works
 
+Two distinct flows. Onboarding happens **once**. The waterfall runs **Mon/Wed/Fri** forever after.
+
+### Flow 1: Onboarding (one-time, ~5-7 minutes)
+
 ```
-Daily 9am local time (Base44 scheduled task)
-      │
-      ▼
-PHASE 1: Search Slack
-  - Your recent messages (last 48h)
-  - Feature announcement channels (#features-intel, #feat-*)
-  - Channels you're active in
-      │
-      ▼
-PHASE 2: Check inspirations
-  - Top 5 inspirations from your profile
-  - What they posted on LinkedIn/X this week
-  - Topics they're hot on right now
-      │
-      ▼
-PHASE 3: Load your voice
-  - tone-of-voice rules
-  - banned words and patterns
-  - last 30 days of your delivered content (avoid duplicates)
-      │
-      ▼
-PHASE 4: Write 2-3 variations
-  - Personal experience angle
-  - Echo response to inspiration
-  - Reflection across signals
-  - All grounded in real Phase 1+2 source material
-      │
-      ▼
-PHASE 5: Voice Guardian
-  - 10-point checklist with your overrides
-  - Score 9+: ship
-  - Score 7-8: auto-rewrite
-  - Score <7: drop and regenerate
-      │
-      ▼
-PHASE 6: Deliver via Slack DM
-  - "Good morning, here are today's drafts:"
-  - Drafts ready to copy-paste
-  - Reply 1/2/3 to mark posted
-  - Reply "not my style" to train your voice
+┌──────────────────────────────────────────────────────────────┐
+│ CHAMPION                          SUPERAGENT                 │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│ 1. Creates new Superagent in Base44                          │
+│                                                              │
+│ 2. Pastes the self-contained  ──▶  reads all 10 Design Rules │
+│    install message (one block)     + Phase B/C/D inline      │
+│                                                              │
+│                               ◀──  PHASE B: Sends ONE        │
+│                                    message                   │
+│                                    • Time estimate (~5-7min) │
+│                                    • 12-step preview         │
+│                                    • 6 questions:            │
+│                                      name/role/persona/      │
+│                                      timezone/slack/         │
+│                                      inspirations            │
+│                                                              │
+│ 3. Replies ONCE with all 6   ──▶  PHASE C (autopilot,        │
+│    answers                         12 steps, no pauses)      │
+│                                                              │
+│    Goes silent.                    Step 1:  Clone repo       │
+│                                    Step 2:  Apply Soul       │
+│                                    Step 3:  Set identity     │
+│                                    Step 4:  Install 6 knowl. │
+│                                             files            │
+│                                             (write_file)     │
+│                                    Step 5:  Install 8 skill  │
+│                                             folders          │
+│                                             + run_skill test │
+│                                    Step 6:  Connect Slack    │
+│                                             + join feed      │
+│                                             channel          │
+│                                             C0ATMPHHM40      │
+│                                    Step 7:  Profile voice    │
+│                                             from Slack hist. │
+│                                    Step 8:  Load inspiration │
+│                                             list             │
+│                                    Step 9:  Create Mon/Wed/  │
+│                                             Fri 9am cron     │
+│                                    Step 10: Create feedback  │
+│                                             trigger          │
+│                                    Step 11: Silent verify    │
+│                                    Step 12: Dry-run waterfall│
+│                                                              │
+│                               ◀──  Shows 2-3 LinkedIn drafts │
+│                                    in chat (dry-run only,    │
+│                                    not sent to Slack)        │
+│                                                              │
+│                               ◀──  PHASE D: Summary          │
+│                                    message (5 sections):     │
+│                                    1. What I learned (voice  │
+│                                       + 3 real quotes)       │
+│                                    2. What's installed       │
+│                                    3. What's scheduled       │
+│                                    4. How to correct me      │
+│                                    5. What I can't do yet    │
+│                                                              │
+│ 4. Reads Summary, goes quiet.                                │
+│    Waits until next Monday 9am.                              │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
+
+**Champion total effort: one paste + one reply. Everything else is automatic.**
+
+---
+
+### Flow 2: Daily Waterfall (Mon/Wed/Fri 9am, ~60-90s unattended)
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ SCHEDULED TASK FIRES (Base44 cron, 9am local timezone)       │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│ PHASE 1: search-slack-context                                │
+│   • Search champion's own Slack messages (last 48-72h)       │
+│   • Read feature announcement channels                       │
+│   • Return 3-10 scored signals                               │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 2: check-inspirations                                  │
+│   • Read #social-champions-octolens-feed (last 7 days)       │
+│     (OctoLens and Apify Feeder post here centrally)          │
+│   • Filter by champion_inspirations list                     │
+│   • Return top 5 mentions with suggested response angles     │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 3: load-voice                                          │
+│   • Read champion's tone-of-voice profile                    │
+│   • Read style preferences (em dashes, emoji, banned words)  │
+│   • Read last 30 days of delivered content (avoid dupes)     │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 4: write-content                                       │
+│   • Pick strongest signal from Phases 1+2                    │
+│   • Generate 2-3 variations using DIFFERENT angles:          │
+│     - Personal experience (internal anchor)                  │
+│     - Echo response (built on an inspiration's post)         │
+│     - Reflection (synthesis across signals)                  │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 5: voice-guard                                         │
+│   • Score each variation on 10-point checklist               │
+│   • Apply champion overrides (em dashes, emoji, etc.)        │
+│   • Auto-rewrite 7-8 scores (max 2 attempts)                 │
+│   • Drop anything below 9/10                                 │
+│   • If 0 pass → SKIP THE DAY, log reason, silence            │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 5.5: generate-image (only for passed drafts)           │
+│   • Base44 built-in image tool (no API key)                  │
+│   • Attach to draft object                                   │
+│                                                              │
+│         ▼                                                    │
+│                                                              │
+│ PHASE 6: deliver-via-slack                                   │
+│   • Format drafts with daily-digest template                 │
+│   • DM champion via Slack                                    │
+│   • Log to content history                                   │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+          │
+          ▼
+    CHAMPION'S SLACK DM:
+    "Good morning Ofer! Here are today's drafts:
+
+    Option 1 — Personal experience angle
+    [draft + optional image]
+
+    Option 2 — Echo response to @aakashg0's post
+    [draft + optional image]
+
+    Reply 1 or 2 to mark posted,
+    or 'not my style' + feedback."
+          │
+          ▼
+    CHAMPION REPLIES (any time)
+          │
+          ▼
+┌──────────────────────────────────────────────────────────────┐
+│ FEEDBACK TRIGGER FIRES (Slack connector, on any DM reply)    │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│   handle-feedback skill classifies the reply:                │
+│                                                              │
+│   "1" / "2" / "3"              → mark approved, log          │
+│   "not my style"               → update tone-of-voice        │
+│   "too formal"                 → formality = casual          │
+│   "I'd never say X"            → add X to banned_words       │
+│   paste of past LinkedIn post  → learn from it               │
+│   silence                      → that's fine, no nagging     │
+│                                                              │
+│   Updates champion's voice profile in Memory                 │
+│   Next Mon/Wed/Fri run uses the updated profile              │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Daily champion effort: 30 seconds to read, copy, paste to LinkedIn.**
+
+---
+
+### Key properties of both flows
+
+- **Onboarding** touches everything once: secrets, skills, knowledge, schedule, verify, dry-run, summary
+- **Daily** is read-only on secrets/config — it only reads what onboarding wrote
+- **Silence is acceptable** at every decision point: Phase 5 can drop the day, champion can ignore the DM, feedback is optional
+- **No per-day operator involvement** — once onboarded, the agent is invisible until the champion chooses to engage
+- **The shared feed channel is the one central dependency** — OctoLens and the Apify Feeder App both post into `#social-champions-octolens-feed`, all champion agents read from that one channel
 
 ## File Reference
 
