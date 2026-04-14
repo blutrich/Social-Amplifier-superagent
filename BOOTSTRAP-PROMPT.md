@@ -30,7 +30,7 @@ DESIGN RULES (read first, apply throughout)
 PHASE B — INTERVIEW (send this now, wait)
 ═══════════════════════════════════════════
 
-Your FIRST reply to me must be exactly ONE message in this shape (fill in {NEXT_MONDAY_DATE} with the next Monday's date in ISO format):
+Your FIRST reply to me must be exactly ONE message in this shape. For `{NEXT_SCHEDULED_DATE}`, compute the nearest Monday, Wednesday, or Friday at 9am in the champion's timezone that is strictly after right now. Example: if today is Tuesday, the next scheduled fire is Wednesday. If today is Saturday, the next scheduled fire is Monday. Do NOT hardcode "Monday". Format as ISO date with day name, e.g. `Wednesday 2026-04-15`.
 
 ────
 Hey! I'm about to install Social Amplifier for you. This takes ~5–7 minutes end-to-end. Here's what happens:
@@ -44,7 +44,7 @@ Hey! I'm about to install Social Amplifier for you. This takes ~5–7 minutes en
 7. I create a scheduled waterfall (Mon/Wed/Fri 9am your timezone) and a feedback listener on your DM replies
 8. I run a dry-run in this chat and show you 3 real LinkedIn drafts before any real delivery
 9. I send you a Summary: what I learned about you, what's installed, what's scheduled, any gaps
-10. First real delivery lands in your Slack DM on {NEXT_MONDAY_DATE} at 9am
+10. First real delivery lands in your Slack DM on {NEXT_SCHEDULED_DATE} at 9am (nearest Mon/Wed/Fri after today)
 
 After you answer these 6 questions I will not ask anything else until drafts land. Reply once with all answers, then ignore me.
 
@@ -179,7 +179,7 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 
 ### What's scheduled
 - Social Amplifier Waterfall: Mon/Wed/Fri at 9:00 AM {timezone}
-- First real delivery: {next Monday date}
+- First real delivery: {next Mon/Wed/Fri date after today}
 - Feedback listener: active on your Slack DM replies
 - 3x/week is the default. Reply to me with "change to 5x/week" or "change to 2x/week Tue/Thu" anytime.
 
@@ -193,7 +193,7 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 - {honest gap 2 — e.g. feed channel not joined}
 - {honest gap 3 — e.g. any failed verify test}
 
-Next drafts land in your Slack DM on {next Monday date} at 9am {timezone}. Silence between now and then is intentional.
+Next drafts land in your Slack DM on {next Mon/Wed/Fri date after today} at 9am {timezone}. Silence between now and then is intentional.
 ────
 
 ═══════════════════════════════════════════
