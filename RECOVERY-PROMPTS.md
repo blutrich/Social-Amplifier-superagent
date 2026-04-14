@@ -4,42 +4,55 @@ When the install goes sideways, use these prompts to fix specific problems witho
 
 ---
 
-## Recovery 1: Skills Weren't Installed
+## Recovery 1: Skills Saved To Disk But Not Registered In Brain (MOST COMMON)
 
-**Symptom:** You see Identity/Soul/User set correctly in Brain, but `.agents/skills/` is empty and skills don't show up in Brain → Integrations → Skills.
+**Symptom A:** `.agents/skills/` is empty AND Brain → Integrations → Skills shows 0 skills.
 
-**Root cause:** The initial bootstrap set the Brain fields but didn't explicitly create custom skills from the repo files. Base44 Superagents need each skill created by name, not uploaded as a bulk file dump.
+**Symptom B (more common):** `ls .agents/skills/` shows 8 files on disk, BUT Brain → Integrations → Skills shows 0 skills in the UI. The agent claimed it installed them but they're not actually registered.
+
+**Root cause:** Base44 Superagents have TWO separate places skills can live:
+1. `.agents/skills/` folder on disk — the agent can write here easily
+2. `Brain → Integrations → Skills` registry — what the agent ACTUALLY uses at runtime
+
+When told "create a custom skill", agents often just write a file to `.agents/skills/` without registering it in Brain. The skill exists on disk but the agent can't call it. This is the most common install failure observed in real installs.
 
 **Send this to your Superagent:**
 
 ```
-Skills never got installed. Fix this now:
+The install is partially broken. Files may exist in .agents/skills/ but Brain → Integrations → Skills shows 0 skills. They were never actually registered. Same likely true for Knowledge.
 
-1. The repo is at https://github.com/blutrich/Social-Amplifier-superagent — clone it again if you don't still have it locally
+Fix this in exact order:
 
-2. Read the contents of EACH of these files from the skills/ folder:
-   - skills/search-slack-context.md
-   - skills/check-inspirations.md
-   - skills/load-voice.md
-   - skills/write-content.md
-   - skills/voice-guard.md
-   - skills/deliver-via-slack.md
-   - skills/handle-feedback.md
-   - skills/generate-image.md
+1. RUN ls .agents/skills/ AND ls .agents/knowledge/ and show me the output. Confirm if files exist on disk.
 
-3. For each file, create a custom skill with:
-   - Skill name: filename without .md extension (e.g., "search-slack-context")
-   - Description: the first paragraph of the file (the one right after the frontmatter)
-   - Body: the entire file contents verbatim, including frontmatter
+2. REGISTER SKILLS IN BRAIN. Files on disk are NOT the same as skills in Brain → Integrations → Skills. Try these mechanisms in order until one works:
 
-Use your skill creation tool directly. If you have create_skill, use_skill, or equivalent, call it once per skill.
+   a. Chat-based custom skill creation (the docs say this works):
+      For each of the 8 skill files, send yourself a command like:
+      "Create a custom skill named 'search-slack-context' with this body: [paste full file content from .agents/skills/search-slack-context.md]"
+      Repeat for all 8 skills.
+   
+   b. If (a) doesn't make them appear in Brain, look for a built-in tool: create_skill, add_skill, register_skill, install_skill, or anything similar in your available tools. Call it for each skill.
+   
+   c. If neither works, use Base44's REST API: POST to whatever endpoint registers skills. Check Settings → API tab for the base URL.
+   
+   d. Last resort: write directly to the Base44 skill registry via backend function.
 
-4. After all 8 skills are created, run: ls .agents/skills/
-   Report what you see.
+3. AFTER each registration attempt, verify the skill appears in Brain → Integrations → Skills (the UI tab). Don't trust file-on-disk presence. Verify the Brain UI count.
 
-5. If any skill creation failed, tell me the specific error. Don't skip silently.
+4. REPEAT FOR KNOWLEDGE FILES. The 6 files need to appear in Brain → Knowledge → Knowledge files. Use the chat-based knowledge upload command, then any registration tool, then the API.
 
-Execute now. Report progress with ✅ markers per skill.
+5. Final verification:
+   - Brain → Integrations → Skills count = 8
+   - Brain → Knowledge → Knowledge files count = 6 (or 7 with voice profile)
+   - .agents/skills/ disk count = 8
+   - .agents/knowledge/ disk count = 6
+
+6. If Brain UI count still does not match disk count, tell me the SPECIFIC error and which Base44 mechanism failed. Do not say "done" until Brain UI shows the right counts.
+
+Do not recreate files that already exist on disk. Just register them in Brain. Use checkmark markers per skill and per knowledge file.
+
+Execute now.
 ```
 
 ---
