@@ -103,17 +103,23 @@ Skills to install (all 8):
 - handle-feedback
 Verify: run `find /app/.agents/skills -type f` — expect exactly 8 SKILL.md paths and nothing else. Then test one: `run_skill load-voice` must return the SKILL.md body without a "no executable script" error.
 
-STEP 6 — CONNECT SLACK AND JOIN FEED CHANNEL
-Connect the Slack connector via OAuth. Verify by reading my profile and confirming the display name matches Interview answer #1. Then call conversations.join on channel id C0ATMPHHM40 (#social-champions-octolens-feed). Verify access by reading the last 3 messages in that channel. If join fails because the channel is private or missing a scope, note it in the Phase D Summary gaps list and continue — Phase 2 will fall back to champion inspirations from Interview answer #6.
+STEP 6 — CONNECT SLACK AND JOIN FEED CHANNEL (three sub-steps, all reportable)
+Sub-step 6a: Connect the Slack connector via OAuth. Verify by reading my profile and confirming the display name matches Interview answer #1. Report "✅ Slack OAuth: {display_name}".
+Sub-step 6b: EXPLICITLY call conversations.join on channel id C0ATMPHHM40 (#social-champions-octolens-feed). Do NOT skip this call, do NOT assume membership. Log the exact API response (`already_in_channel: true` or `ok: true`). Report "✅ Join #social-champions-octolens-feed: {response}".
+Sub-step 6c: Call conversations.history on C0ATMPHHM40 with limit=5. Confirm you can read messages and report "✅ Feed read access: {N} messages visible, latest from {author} at {timestamp}".
+If 6b fails because the channel is private or a scope is missing, note it in the Phase D Summary gaps list with the exact error and continue — Phase 2 will fall back to Phase 1 signals only (NEVER to web search).
 
 STEP 7 — PROFILE VOICE AUTOMATICALLY (not optional)
 Search Slack for my last 50–100 substantive messages from:@{slack_handle_from_interview}. Analyze across 8 dimensions: sentence length, vocabulary register, em dashes, emoji frequency, structure preferences, humor frequency, language mix, named references. Generate my tone-of-voice file using knowledge/champion-tone-template.md structure, filled with real observations and 3 verbatim sample quotes. Save via write_file to .agents/knowledge/{firstname}-tone-of-voice.md.
 
-STEP 8 — LOAD INSPIRATIONS
+STEP 8 — LOAD INSPIRATIONS (names only, NO content fetching)
 From Interview answer #6:
 - If I listed specific names/handles, save them to Memory as `champion_inspirations` array with platform + handle per entry
 - If I typed "skip", read knowledge/inspiration-seeds.json, pick 3–5 entries matching my persona (plus Anthropic defaults), save to Memory
-Use the list as a FILTER for Slack feed matches in Phase 2 of the waterfall — you do not scrape these directly.
+
+DO NOT web-search for the inspirations' recent posts during this step. DO NOT call any scraper. DO NOT create an inspiration-activity.md scratchpad. The only output of Step 8 is the Memory `champion_inspirations` array with names and handles — nothing else.
+
+Phase 2 of the waterfall is the ONLY place that reads recent posts, and it reads them from the shared Slack feed channel #social-champions-octolens-feed (C0ATMPHHM40), never from web search during dry-run.
 
 STEP 9 — CREATE WATERFALL SCHEDULE
 Create a scheduled task named "Social Amplifier Waterfall":
@@ -128,8 +134,23 @@ Create a Slack connector trigger that fires when I reply to your DMs. The trigge
 STEP 11 — SILENT VERIFY
 Silently run the verify-install tests. Collect pass/fail per test in memory — DO NOT send a message yet. The results feed into Phase D.
 
-STEP 12 — DRY-RUN WATERFALL
-Run the full 7-phase waterfall in dry-run mode. Show 2–3 LinkedIn draft variations in this chat (NOT via Slack DM). Each draft must score 9+ on Voice Guardian or drop it. If fewer than 2 drafts pass the floor, say so honestly. Phase 2 should read the last 7 days from #social-champions-octolens-feed — if the channel has posts, at least one draft should use an "echo" angle grounded in a real feed post.
+STEP 12 — DRY-RUN WATERFALL (Phase 2 MUST read the feed channel)
+Run the full 7-phase waterfall in dry-run mode. Show 2–3 LinkedIn draft variations in this chat (NOT via Slack DM).
+
+Phase 2 of the dry-run MUST call conversations.history on C0ATMPHHM40 for the last 7 days. This is not optional. Report as part of Step 12:
+- "Phase 2 feed read: {N} messages from #social-champions-octolens-feed"
+- "Phase 2 inspiration matches: {M} messages matched champion_inspirations list"
+- "Phase 2 echo grounding: draft {K} uses feed post by {author} at {ts}"
+
+FORCE FALLBACK rules (in order):
+- Feed channel has matches → use them for echo grounding
+- Feed channel has 0 matches but has messages → report "no matches, using Phase 1 signals only"
+- Feed channel has 0 messages → report "feed empty, using Phase 1 signals only"
+- Feed channel unreachable → report the error + "using Phase 1 signals only"
+- Do NOT fall back to web search during dry-run. Web search during dry-run is a bug.
+- Do NOT read inspiration-activity.md. That file should not exist (Step 8 doesn't create it).
+
+Each draft must score 9+ on Voice Guardian or drop it. If fewer than 2 drafts pass the floor, say so honestly.
 
 ═══════════════════════════════════════════
 PHASE D — SUMMARY (final message, 5 sections, mandatory)
@@ -181,6 +202,9 @@ ENFORCEMENT
 
 - If you catch yourself about to run `cat >`, `cp`, or `echo >` for any file under .agents/, STOP and use write_file instead.
 - If you catch yourself writing "Love it" or "Let me..." or similar, STOP and rewrite in Soul tone.
+- If you catch yourself about to say "Write 'continue' to keep going", "Should I proceed?", "Shall I continue?", "Let me check in with you", or ANY pause request between Steps 1-12, STOP. You already have authorization for all 12 steps. Run them back-to-back. The only acceptable status lines are short "✅ Step N done" markers. Never ask for permission to proceed mid-autopilot.
+- If you catch yourself about to call web_search during Step 12 (dry-run), STOP. Phase 2 of the dry-run reads ONLY #social-champions-octolens-feed (C0ATMPHHM40). If the feed is empty, use Phase 1 signals only. Web search during dry-run is a bug.
+- If you catch yourself creating an inspiration-activity.md scratchpad during Step 8, STOP. Step 8 only saves names/handles to Memory. Fetching recent posts is Phase 2's job, not Step 8's.
 - If any Phase C step fails, log the specific error and continue to the next step. Only stop if Slack connection fails entirely (that is a blocker).
 - Do not auto-send any Slack DM during install. The dry-run in Step 12 stays in chat. First real Slack DM happens on the scheduled run.
 - Do not ask me anything between Phase B answers and the Phase D Summary.
