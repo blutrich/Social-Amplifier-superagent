@@ -47,10 +47,11 @@ STEP 4: SET IDENTITY
 Use my info above to fill in identity-template.md. Set your name to [FirstName]Agent.
 
 STEP 5: INSTALL KNOWLEDGE FILES (CRITICAL - DO NOT SKIP)
-For each file in the knowledge/ folder of the cloned repo, do this:
-1. Read the file contents
-2. Save it to your .agents/knowledge/ folder with the same filename
-3. ALSO add it to Brain → Knowledge → Knowledge files via your upload mechanism
+CRITICAL PERSISTENCE RULE: You MUST use the `write_file` tool for every file. Do NOT use bash `cat >`, `cp`, `echo >`, or any shell redirect — those write to an ephemeral sandbox that resets and won't appear in the Files panel. `write_file` is the only mechanism that persists to Base44 Files storage.
+
+For each file in the knowledge/ folder of the cloned repo:
+1. Read the file contents from the clone
+2. Call write_file with path=.agents/knowledge/{filename} and content=verbatim file body
 
 Files to install (all 6):
 - knowledge/voice-guardian-checklist.md
@@ -60,16 +61,17 @@ Files to install (all 6):
 - knowledge/inspiration-seeds.json
 - knowledge/champion-tone-template.md
 
-After installing, verify by running `ls .agents/knowledge/` — you must see all 6 files. If the ls command fails, tell me the specific error.
+Verify by opening the Files panel (not bash ls) — you must see all 6 files under .agents/knowledge/. If only some show up, you used shell redirects instead of write_file — re-run with write_file.
 
 STEP 6: INSTALL SKILLS (CRITICAL - DO NOT SKIP)
 The skills/ folder in the cloned repo has 8 skill folders. Base44 Superagent skills are pure markdown SKILL.md files inside a folder named after the skill — verified against base44-dev/apper production skills. DO NOT create .sh, .py, or .js scripts. DO NOT flatten to loose .md files at the root of .agents/skills/.
 
+CRITICAL PERSISTENCE RULE (same as Step 5): Use the `write_file` tool only. Do NOT use bash `cat >`, `cp`, or shell redirects — they write to the ephemeral sandbox and will not appear in the Files panel or persist across sessions.
+
 For each skill, execute this exact pattern:
 1. Read the file from the cloned repo at skills/{name}/SKILL.md (already has YAML frontmatter)
-2. Create directory /app/.agents/skills/{name}/
-3. Write the full SKILL.md contents verbatim to /app/.agents/skills/{name}/SKILL.md
-4. Do NOT create a scripts/ subfolder. Do NOT create run.sh/run.py/run.js. The markdown IS the skill.
+2. Call write_file with path=.agents/skills/{name}/SKILL.md and content=verbatim file body
+3. Do NOT create a scripts/ subfolder. Do NOT create run.sh/run.py/run.js. The markdown IS the skill.
 
 Skills to install (all 8):
 - search-slack-context
