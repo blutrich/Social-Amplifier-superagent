@@ -1,6 +1,6 @@
 # Waterfall Overview
 
-The 6-phase content waterfall that runs every time the agent generates content for its champion. Each phase feeds the next sequentially.
+The 7-phase content waterfall that runs every time the agent generates content for its champion. Each phase feeds the next sequentially.
 
 ## The Phases
 
@@ -35,6 +35,13 @@ PHASE 5: VOICE GUARDIAN SCORING
   - Auto-rewrite 7-8 scores (max 2 attempts)
   - Drop variations scoring below 7
   - Require at least 1 variation passes 9+ before delivery
+
+PHASE 5.5: GENERATE IMAGE (one per approved draft)
+  - Read image_suggestion from write-content
+  - Use Base44's built-in image generation (no API key needed)
+  - stat_visual / diagram → auto-generate with brand composite
+  - feature_screenshot / source_screenshot → return manual-capture instructions
+  - Attach to the draft object for delivery
 
 PHASE 6: DELIVER VIA SLACK
   - Format approved drafts with the daily-digest template

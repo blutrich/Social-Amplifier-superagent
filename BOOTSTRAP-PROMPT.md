@@ -104,7 +104,7 @@ STEP 9: CREATE THE DAILY WATERFALL SCHEDULE
 Create a scheduled task named "Social Amplifier Waterfall":
 - Schedule: Monday, Wednesday, Friday at 9:00 AM [MY_TIMEZONE]
 - Frequency: 3 times per week (NOT 5x)
-- Action: Run search-slack-context → check-inspirations → load-voice → write-content → voice-guard → deliver-via-slack in order
+- Action: Run search-slack-context → check-inspirations → load-voice → write-content → voice-guard → generate-image (for each approved draft, uses Base44 built-in image tool, no API key) → deliver-via-slack in order
 - If any phase returns no usable output, log the reason and skip the day. Better silence than weak content.
 
 STEP 10: CREATE THE FEEDBACK TRIGGER

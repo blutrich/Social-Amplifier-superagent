@@ -29,8 +29,9 @@ When this task runs, do these steps in order:
 3. Run load-voice skill to load my voice profile and last 30 days of delivered content
 4. Run write-content skill to generate 2-3 LinkedIn draft variations using different angles
 5. Run voice-guard skill to score each variation and reject anything below 7
-6. If at least one variation scored 9+, run deliver-via-slack skill to send approved drafts to my Slack DM
-7. Log the full run to my content history
+6. For each variation that scored 9+, run generate-image skill (uses Base44's built-in image generation — no API key needed) to attach a branded image to the draft
+7. If at least one variation scored 9+, run deliver-via-slack skill to send approved drafts (with images) to my Slack DM
+8. Log the full run to my content history
 
 If any phase produces no usable output, log the specific reason and skip the day. Better silence than weak content.
 

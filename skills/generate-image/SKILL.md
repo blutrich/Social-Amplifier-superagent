@@ -1,33 +1,32 @@
 ---
 name: generate-image
-description: Optional. Generates a branded social image for an approved draft via nano-banana (Google Imagen 3). Triggers on "generate image", "make visual", only when image_suggestion.needed is true.
+description: Phase 5.5 of the waterfall. Generates a branded social image for each voice-guard-approved draft using Base44's built-in image generation. Triggers after voice-guard, before deliver-via-slack.
 ---
 
 # generate-image
 
-Optional Phase 6+ step. Generates a branded social image for a Voice Guardian-approved draft using nano-banana (Google Imagen 3) with Base44 brand composites.
+Phase 5.5 of the waterfall. Generates one branded social image per Voice Guardian-approved draft using Base44 Superagent's built-in image generation (nano-banana / Imagen). No API key required — the Superagent platform provides the tool natively.
 
 ## When To Run
 
-Only after the deliver-via-slack skill identifies an image suggestion with `needed: true` AND the champion has approved (manually or via their preferences).
+Automatically, as part of the waterfall, after Phase 5 (voice-guard) and before Phase 6 (deliver-via-slack). Runs once per approved draft. Attach the generated image to the draft so deliver-via-slack sends text + image together.
 
-Most LinkedIn posts perform better text-only. Don't auto-generate images for every delivery. This skill is explicitly opt-in per draft.
+If a draft's `image_suggestion.type` is `feature_screenshot` or `source_screenshot`, this skill returns instructions for the champion to capture the image manually instead of generating one. Don't fake screenshots.
 
 ## What It Does
 
-1. Reads the image_suggestion from Phase 6 of the waterfall
-2. Picks the right generator: feature_screenshot (manual), stat_visual (nano-banana), diagram (excalidraw), source_screenshot (manual)
-3. For nano-banana images:
-   - Calls Imagen 3 via Google API to generate the base photo/illustration
-   - Composites into a Base44 brand template with correct colors, typography, logo
-   - Returns the image URL or file path
-4. Attaches the image to the Slack delivery OR returns it for champion to add manually
+1. Reads the `image_suggestion` object produced by write-content (Phase 4)
+2. Dispatches by type:
+   - `stat_visual` → generates via built-in image tool with brand composite
+   - `diagram` → generates a simple illustrative diagram via built-in tool
+   - `feature_screenshot` / `source_screenshot` → returns manual-capture instructions, no generation
+3. Applies Base44 brand guidance to the prompt (colors, typography cues, style: "clean minimal illustration, warm palette, no text unless requested")
+4. Returns the image file/URL attached to the draft object so deliver-via-slack can include it
 
 ## Prerequisites
 
-- `GOOGLE_API_KEY` in Superagent **Settings → Secrets & Keys**
-- Python libs: `google-genai`, `Pillow`, `cairosvg` (installed via Base44 Python environment)
-- Base44 brand reference files (colors, fonts, logo SVG)
+- Base44 Superagent built-in image generation (nano-banana / Imagen) — available by default, no API key required
+- No external Google API key, no Python dependencies — the platform handles it
 
 ## Image Types
 

@@ -18,7 +18,8 @@ PHASE 2: check-inspirations       → see what champion's inspirations posted th
 PHASE 3: load-voice               → load champion's tone-of-voice + style preferences
 PHASE 4: write-content            → generate 2-3 variations grounded in real signals
 PHASE 5: voice-guard              → score each variation on 10-point Voice Guardian rubric
-PHASE 6: deliver-via-slack        → send approved drafts via Slack DM
+PHASE 5.5: generate-image         → Base44 built-in image tool, one per approved draft
+PHASE 6: deliver-via-slack        → send approved drafts (with images) via Slack DM
 ```
 
 Optional Phase 6+: `generate-image` for branded visuals (defaults off, most posts are text-only).
