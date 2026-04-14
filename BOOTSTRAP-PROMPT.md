@@ -62,30 +62,30 @@ Files to install (all 6):
 
 After installing, verify by running `ls .agents/knowledge/` — you must see all 6 files. If the ls command fails, tell me the specific error.
 
-STEP 6: CREATE CUSTOM SKILLS (CRITICAL - DO NOT SKIP)
-The skills/ folder has 8 markdown files. These are NOT auto-installed by cloning. You must CREATE each one as a custom skill explicitly.
+STEP 6: INSTALL SKILLS (CRITICAL - DO NOT SKIP)
+The skills/ folder in the cloned repo has 8 skill folders. Base44 Superagent skills are pure markdown SKILL.md files inside a folder named after the skill — verified against base44-dev/apper production skills. DO NOT create .sh, .py, or .js scripts. DO NOT flatten to loose .md files at the root of .agents/skills/.
 
-For each skill file, execute this pattern:
-1. Read the file contents from the cloned repo (e.g., cat /path/to/repo/skills/search-slack-context.md)
-2. Create a custom skill with:
-   - Name: matches the filename without .md (e.g., "search-slack-context")
-   - Description: first paragraph of the file
-   - Body/instructions: the entire file contents verbatim
-3. Save the skill to .agents/skills/ folder
+For each skill, execute this exact pattern:
+1. Read the file from the cloned repo at skills/{name}/SKILL.md (already has YAML frontmatter)
+2. Create directory /app/.agents/skills/{name}/
+3. Write the full SKILL.md contents verbatim to /app/.agents/skills/{name}/SKILL.md
+4. Do NOT create a scripts/ subfolder. Do NOT create run.sh/run.py/run.js. The markdown IS the skill.
 
-Skills to create (all 8):
-- search-slack-context (from skills/search-slack-context.md)
-- check-inspirations (from skills/check-inspirations.md)
-- load-voice (from skills/load-voice.md)
-- write-content (from skills/write-content.md)
-- voice-guard (from skills/voice-guard.md)
-- deliver-via-slack (from skills/deliver-via-slack.md)
-- handle-feedback (from skills/handle-feedback.md)
-- generate-image (from skills/generate-image.md) — optional, skip if no Google API key
+Skills to install (all 8):
+- search-slack-context
+- check-inspirations
+- load-voice
+- write-content
+- voice-guard
+- deliver-via-slack
+- handle-feedback
+- generate-image (optional, skip if no Google API key)
 
-After creating, verify by running `ls .agents/skills/` — you must see 7-8 skill files. If any skill failed to create, tell me the specific error and continue to the next one.
+Verify layout:
+  find /app/.agents/skills -type f
+  Expected output: exactly 8 SKILL.md files under /app/.agents/skills/{name}/SKILL.md and nothing else. No loose .md at the root. No scripts/ anywhere.
 
-If your skill-creation tool takes a different input format, adapt accordingly but ensure each skill's full markdown content ends up in your skill registry.
+Test one skill: run_skill load-voice — it must return the SKILL.md body without any "no executable script" error. If it errors, stop and tell me the exact error.
 
 STEP 7: CONNECT SLACK
 Walk me through connecting Slack. Verify by reading my own profile and telling me my display name.

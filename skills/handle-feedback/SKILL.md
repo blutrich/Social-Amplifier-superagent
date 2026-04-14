@@ -1,4 +1,9 @@
-# Skill: handle-feedback
+---
+name: handle-feedback
+description: Parses champion replies to delivered drafts and updates their voice profile. Triggers on any reply to the daily DM, or "handle feedback", "process reply".
+---
+
+# handle-feedback
 
 Parses champion replies to delivered drafts and updates their voice profile based on the feedback.
 

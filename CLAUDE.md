@@ -148,17 +148,30 @@ The bootstrap prompt template is in `BOOTSTRAP-PROMPT.md`. It includes filled-in
 
 **Base44 Superagents do NOT automatically install files from a cloned repo as skills.**
 
+**Canonical skill format (verified against base44-dev/apper `.agents/skills/`):**
+
+```
+.agents/skills/{skill-name}/SKILL.md
+```
+
+Each skill is a FOLDER containing a single `SKILL.md` with YAML frontmatter (name + description with trigger phrases). Pure markdown — **no `.sh`/`.py`/`.js` scripts, no `scripts/` subfolder**. All 22 production apper skills follow this exact shape.
+
+**Knowledge files** are loose markdown at `.agents/knowledge/{name}.md`.
+
 When the bootstrap says "clone the repo and configure yourself", the Superagent will:
 - ✅ Set Brain → Soul, Identity, User from the markdown files
 - ✅ Connect Slack via OAuth
 - ❌ NOT auto-install knowledge files to `.agents/knowledge/`
-- ❌ NOT auto-create custom skills from `skills/*.md` files
+- ❌ NOT auto-create the skill folders under `.agents/skills/`
 
 **The bootstrap prompt must explicitly tell the Superagent to:**
 
-1. For each file in `knowledge/`, read it and add to Brain → Knowledge files
-2. For each file in `skills/`, read it and CREATE A CUSTOM SKILL with that name and content (using the agent's skill creation tool, not "upload")
-3. Verify by running `ls .agents/skills/` and `ls .agents/knowledge/`
+1. For each file in `knowledge/`, copy to `.agents/knowledge/{name}.md`
+2. For each folder in `skills/`, create `.agents/skills/{name}/SKILL.md` with the verbatim body (frontmatter already present in source)
+3. NEVER create scripts. NEVER flatten to loose `.md` at `.agents/skills/` root — file-vs-folder collision breaks run_skill
+4. Verify with `find /app/.agents/skills -type f` — expect exactly 8 `SKILL.md` files and nothing else
+
+**Common failure mode:** the agent hallucinates that skills must be executable scripts because loose `.md` files at the root didn't register. The fix is always the folder structure, never scripts. See RECOVERY-PROMPTS.md Recovery 1.
 
 The current `BOOTSTRAP-PROMPT.md` (Steps 5 and 6) handles this explicitly with CRITICAL markers. If you're updating the bootstrap, do not regress this — the Superagent will silently set Brain fields and skip files otherwise.
 

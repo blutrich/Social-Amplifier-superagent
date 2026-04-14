@@ -1,4 +1,9 @@
-# Skill: deliver-via-slack
+---
+name: deliver-via-slack
+description: Phase 6 of waterfall. Sends approved drafts to the champion via Slack DM with reply-to-approve pattern. Triggers on "deliver via slack", "phase 6", "send drafts", "dm drafts".
+---
+
+# deliver-via-slack
 
 Phase 6 of the waterfall. Sends approved drafts to the champion via Slack DM.
 

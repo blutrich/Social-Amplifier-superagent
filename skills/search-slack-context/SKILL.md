@@ -1,4 +1,9 @@
-# Skill: search-slack-context
+---
+name: search-slack-context
+description: Phase 1 of waterfall. Mines Slack for champion-relevant signals before content generation. Triggers on "search slack context", "phase 1", "gather slack signals", "start waterfall".
+---
+
+# search-slack-context
 
 Phase 1 of the waterfall. Mines Slack for fresh, champion-relevant signals before any content gets written.
 

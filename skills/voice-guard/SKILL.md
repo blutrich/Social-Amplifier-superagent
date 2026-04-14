@@ -1,4 +1,9 @@
-# Skill: voice-guard
+---
+name: voice-guard
+description: Phase 5 of waterfall. Scores each draft on the 10-point Voice Guardian rubric with per-champion overrides. Rejects anything below 9. Triggers on "voice guard", "phase 5", "score drafts", "check voice".
+---
+
+# voice-guard
 
 Phase 5 of the waterfall. Scores each generated variation against the 10-point Voice Guardian checklist with per-champion overrides.
 

@@ -1,4 +1,9 @@
-# Skill: generate-image
+---
+name: generate-image
+description: Optional. Generates a branded social image for an approved draft via nano-banana (Google Imagen 3). Triggers on "generate image", "make visual", only when image_suggestion.needed is true.
+---
+
+# generate-image
 
 Optional Phase 6+ step. Generates a branded social image for a Voice Guardian-approved draft using nano-banana (Google Imagen 3) with Base44 brand composites.
 

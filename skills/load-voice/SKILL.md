@@ -1,4 +1,9 @@
-# Skill: load-voice
+---
+name: load-voice
+description: Phase 3 of waterfall. Loads champion tone-of-voice, style preferences, and recent delivery history into working context. Triggers on "load voice", "phase 3", "load champion profile".
+---
+
+# load-voice
 
 Phase 3 of the waterfall. Loads the champion's voice profile into working memory before generation.
 

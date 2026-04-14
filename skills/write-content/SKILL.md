@@ -1,4 +1,9 @@
-# Skill: write-content
+---
+name: write-content
+description: Phase 4 of waterfall. Generates 2-3 LinkedIn draft variations grounded in real Slack/inspiration signals and champion voice. Triggers on "write content", "phase 4", "generate drafts", "draft posts".
+---
+
+# write-content
 
 Phase 4 of the waterfall. Synthesizes Slack signals + inspiration activity + champion voice into 2-3 distinct LinkedIn drafts.
 

@@ -1,4 +1,9 @@
-# Skill: check-inspirations
+---
+name: check-inspirations
+description: Phase 2 of waterfall. Checks what champion inspirations posted on LinkedIn/X this week via OctoLens or Bright Data. Triggers on "check inspirations", "phase 2", "inspiration activity".
+---
+
+# check-inspirations
 
 Phase 2 of the waterfall. Checks what the champion's inspirations are posting on LinkedIn/X this week.
 
