@@ -1,15 +1,26 @@
 ---
 name: handle-feedback
-description: Parses champion replies to delivered drafts and updates their voice profile. Triggers on any reply to the daily DM, or "handle feedback", "process reply".
+description: Parses champion replies to delivered drafts and updates their voice profile. ONLY triggers on messages in the agent-champion DM channel. Triggers on "handle feedback", "process reply".
 ---
 
 # handle-feedback
 
 Parses champion replies to delivered drafts and updates their voice profile based on the feedback.
 
+## CRITICAL: DM Channel Filter (privacy boundary)
+
+This skill ONLY processes messages from the dedicated DM channel between the agent and the champion. This channel ID is resolved during install Step 6 (e.g. `D0AA2C6LK3M` for Ofer) and stored in Memory as `champion_dm_channel_id`.
+
+**Before processing ANY incoming message, check:**
+1. Is `message.channel` equal to `champion_dm_channel_id` from Memory?
+2. If YES → process the feedback normally
+3. If NO → **IGNORE COMPLETELY. Do not read, do not respond, do not classify, do not log.** This is someone else's private conversation. The agent has no business being there.
+
+**Why this exists:** The Slack connector's `message.im` trigger fires on ALL DM activity visible to the connected account, not just the agent-champion channel. Without this filter, the agent interferes with the champion's private DM conversations with other people. This is a privacy violation, not just a bug.
+
 ## When To Run
 
-When the champion replies to a previously-delivered Slack DM. Triggered automatically by the Slack connector when a new message arrives in the agent-champion DM channel.
+When the champion sends a message in the agent-champion DM channel ONLY. Triggered automatically by the Slack connector `message.im` event, filtered by `champion_dm_channel_id`.
 
 ## What It Does
 

@@ -9,11 +9,17 @@ In your Base44 Superagent chat, send this exact message:
 ```
 Create a connector trigger with these settings:
 
-Trigger: When I reply to your Slack DM
+Trigger: When a message arrives on Slack DM (message.im event)
 Connector: Slack
 Description: Process my feedback on delivered drafts and update my voice profile
 
-When triggered, do these steps:
+CRITICAL FILTER — PRIVACY BOUNDARY:
+Before doing ANYTHING with an incoming message, check if message.channel matches my DM channel with you (the agent). My DM channel ID is stored in your Memory as champion_dm_channel_id (resolved during install Step 6).
+
+- If message.channel == champion_dm_channel_id → process normally (steps 1-5 below)
+- If message.channel != champion_dm_channel_id → IGNORE COMPLETELY. Do not read, respond, classify, or log. This is someone else's private conversation.
+
+When the channel matches, do these steps:
 1. Read my reply message
 2. Run the handle-feedback skill with the reply text
 3. Classify the reply (approval, rejection, feedback, rewrite, pause, question, silence)

@@ -107,6 +107,7 @@ STEP 6 — CONNECT SLACK AND JOIN FEED CHANNEL (three sub-steps, all reportable)
 Sub-step 6a: Connect the Slack connector via OAuth. Verify by reading my profile and confirming the display name matches Interview answer #1. Report "✅ Slack OAuth: {display_name}".
 Sub-step 6b: EXPLICITLY call conversations.join on channel id C0ATMPHHM40 (#social-champions-octolens-feed). Do NOT skip this call, do NOT assume membership. Log the exact API response (`already_in_channel: true` or `ok: true`). Report "✅ Join #social-champions-octolens-feed: {response}".
 Sub-step 6c: Call conversations.history on C0ATMPHHM40 with limit=5. Confirm you can read messages and report "✅ Feed read access: {N} messages visible, latest from {author} at {timestamp}".
+Sub-step 6d: Open a DM channel with the champion (conversations.open with the champion's user ID). Save the returned channel ID to Memory as `champion_dm_channel_id`. This is the ONLY channel the feedback trigger will listen to. Report "✅ DM channel: {channel_id}".
 If 6b fails because the channel is private or a scope is missing, note it in the Phase D Summary gaps list with the exact error and continue — Phase 2 will fall back to Phase 1 signals only (NEVER to web search).
 
 STEP 7 — PROFILE VOICE AUTOMATICALLY (not optional)
@@ -128,8 +129,13 @@ Create a scheduled task named "Social Amplifier Waterfall":
 - Action when the task runs: execute in order — search-slack-context → check-inspirations → load-voice → write-content → voice-guard → generate-image (for each draft that scored 9+, uses Base44 built-in image tool, no API key) → deliver-via-slack
 - Skip rule: if any phase returns no usable output, log the reason and skip the day. Better silence than weak content.
 
-STEP 10 — CREATE FEEDBACK TRIGGER
-Create a Slack connector trigger that fires when I reply to your DMs. The trigger calls handle-feedback skill to classify my reply ("1"/"2"/"3"/"not my style"/"too formal"/etc.) and update my voice profile in Memory.
+STEP 10 — CREATE FEEDBACK TRIGGER (with DM channel filter — privacy boundary)
+Create a Slack connector trigger on `message.im` events. The trigger MUST include this filter:
+- BEFORE processing any message, check if `message.channel` matches `champion_dm_channel_id` from Memory (saved in Step 6d)
+- If it matches → run handle-feedback skill to classify the reply ("1"/"2"/"3"/"not my style"/"too formal"/etc.) and update the voice profile
+- If it does NOT match → IGNORE COMPLETELY. Do not read, respond, classify, or log. That is someone else's private conversation.
+
+This filter is a privacy boundary. Without it, the agent interferes with the champion's private DM conversations with other people. The trigger fires on ALL DMs visible to the Slack connector, not just the agent-champion channel. The filter is what makes it safe.
 
 STEP 11 — SILENT VERIFY
 Silently run the verify-install tests. Collect pass/fail per test in memory — DO NOT send a message yet. The results feed into Phase D.
