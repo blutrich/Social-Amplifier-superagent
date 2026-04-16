@@ -122,12 +122,18 @@ DO NOT web-search for the inspirations' recent posts during this step. DO NOT ca
 
 Phase 2 of the waterfall is the ONLY place that reads recent posts, and it reads them from the shared Slack feed channel #social-champions-octolens-feed (C0ATMPHHM40), never from web search during dry-run.
 
-STEP 9 — CREATE WATERFALL SCHEDULE
+STEP 9 — CREATE WATERFALL SCHEDULE (verify days after creation)
 Create a scheduled task named "Social Amplifier Waterfall":
 - Schedule: Monday, Wednesday, and Friday at 9:00 AM in my timezone (Interview answer #4)
 - Frequency: 3 times per week (NEVER 5x)
 - Action when the task runs: execute in order — search-slack-context → check-inspirations → load-voice → write-content → voice-guard → generate-image (for each draft that scored 9+, uses Base44 built-in image tool, no API key) → deliver-via-slack
 - Skip rule: if any phase returns no usable output, log the reason and skip the day. Better silence than weak content.
+
+AFTER creating the task, read back its actual schedule configuration and verify:
+- Days MUST be Monday, Wednesday, Friday. NOT Sun/Tue/Thu. NOT Mon-Fri. NOT any other combination.
+- Time MUST be 9:00 AM in the champion's timezone.
+If the days are wrong, DELETE the task and recreate it with the correct days. Do not proceed until the schedule reads Monday/Wednesday/Friday.
+Report: "✅ Step 9 done — schedule verified: {actual_days} at {actual_time} {timezone}"
 
 STEP 10 — CREATE FEEDBACK TRIGGER (with DM channel filter — privacy boundary)
 Create a Slack connector trigger on `message.im` events. The trigger MUST include this filter:
@@ -184,8 +190,8 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 - Verify tests passed: {X}/{total}
 
 ### What's scheduled
-- Social Amplifier Waterfall: Mon/Wed/Fri at 9:00 AM {timezone}
-- First real delivery: {next Mon/Wed/Fri date after today}
+- Social Amplifier Waterfall: {READ THE ACTUAL TASK SCHEDULE AND REPORT THE REAL DAYS — do not echo "Mon/Wed/Fri" from this template. If the actual task says Sun/Tue/Thu or any other wrong days, flag it as a gap in "What I can't do yet" and fix it before sending this Summary.}
+- First real delivery: {next Mon/Wed/Fri date after today, computed from the ACTUAL task schedule}
 - Feedback listener: active on your Slack DM replies
 - 3x/week is the default. Reply to me with "change to 5x/week" or "change to 2x/week Tue/Thu" anytime.
 
