@@ -22,8 +22,6 @@ PHASE 5.5: generate-image         → Base44 built-in image tool, one per approv
 PHASE 6: deliver-via-slack        → send approved drafts (with images) via Slack DM
 ```
 
-Optional Phase 6+: `generate-image` for branded visuals (defaults off, most posts are text-only).
-
 Total runtime per generation: 45-90 seconds.
 
 ## Repo Structure
@@ -48,14 +46,14 @@ Social-Amplifier-superagent/
 │   ├── inspiration-seeds.json      # Persona → influencer mapping (Anthropic auto-include)
 │   └── champion-tone-template.md   # Template for per-champion voice profile
 ├── skills/
-│   ├── search-slack-context.md     # Phase 1
-│   ├── check-inspirations.md       # Phase 2
-│   ├── load-voice.md               # Phase 3
-│   ├── write-content.md            # Phase 4
-│   ├── voice-guard.md              # Phase 5
-│   ├── deliver-via-slack.md        # Phase 6
-│   ├── handle-feedback.md          # Reply parsing + voice profile updates
-│   └── generate-image.md           # Optional branded image generation (nano-banana wrapper)
+│   ├── search-slack-context/SKILL.md   # Phase 1
+│   ├── check-inspirations/SKILL.md     # Phase 2
+│   ├── load-voice/SKILL.md             # Phase 3
+│   ├── write-content/SKILL.md          # Phase 4
+│   ├── voice-guard/SKILL.md            # Phase 5
+│   ├── generate-image/SKILL.md         # Phase 5.5 (Base44 built-in image tool)
+│   ├── deliver-via-slack/SKILL.md      # Phase 6
+│   └── handle-feedback/SKILL.md        # Reply parsing + voice profile updates
 └── tasks/
     ├── daily-waterfall.md          # Scheduled task: Mon/Wed/Fri 9am local (3x/week default)
     └── feedback-on-reply.md        # Connector trigger: when champion replies to DM
@@ -191,7 +189,7 @@ This is wrong for the Social Amplifier agent. The `soul.md` file has a `CRITICAL
 
 ### When adding a new skill
 
-1. Create `skills/{name}.md` with the standard skill format
+1. Create `skills/{name}/SKILL.md` with YAML frontmatter (name + description with trigger phrases)
 2. Add it to the BOOTSTRAP-PROMPT.md Step 6 list
 3. Add it to README.md file reference table
 4. Add it to verify-install.md Test 1 expected list

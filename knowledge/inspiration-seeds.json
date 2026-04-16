@@ -9,8 +9,7 @@
     "channel_id": "C0ATMPHHM40",
     "channel_name": "social-champions-octolens-feed",
     "workspace": "base44workspace.slack.com",
-    "lookback_hours": 168,
-    "fallback_order": ["champion_inspirations", "octolens_mcp", "apify", "web_search"]
+    "lookback_hours": 168
   },
   "always_include": {
     "anthropic_team": {
