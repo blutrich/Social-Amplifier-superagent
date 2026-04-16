@@ -1,27 +1,33 @@
 ---
 name: check-inspirations
-description: Phase 2 of waterfall. Reads the shared #social-champions-octolens-feed Slack channel (primary) then per-champion inspirations list (Apify) to find what's worth echoing this week. Triggers on "check inspirations", "phase 2", "inspiration activity".
+description: Phase 2 of waterfall. Reads the shared #social-champions-octolens-feed Slack channel for echo-worthy posts. Champion's heroes get priority but all feed content is fair game. Triggers on "check inspirations", "phase 2", "inspiration activity".
 ---
 
 # check-inspirations
 
-Phase 2 of the waterfall. Finds what the champion's inspirations posted in the last 7 days and surfaces the strongest echo opportunities.
+Phase 2 of the waterfall. Reads the shared inspiration feed and picks the 2-3 posts that best complement the champion's Phase 1 Slack signals.
 
 ## When To Run
 
 After `search-slack-context` (Phase 1), before `load-voice` (Phase 3).
 
-## Single Source: Shared Slack Feed Channel
+## Source: Shared Slack Feed Channel
 
-Read `knowledge/inspiration-seeds.json` → `social_amplifier_feed` for the current channel config.
+Read `knowledge/inspiration-seeds.json` → `social_amplifier_feed` for the channel config.
 
 **The only source is** `#social-champions-octolens-feed` (channel ID `C0ATMPHHM40`). Two feeder systems post into it server-side:
-- **OctoLens** posts brand mentions, competitor signals, and tagged social content
-- **Apify Inspiration Feeder** (a separate Base44 app, app id `69de4f68f7667dfd280537e5`) posts LinkedIn + X profile scrapes for the shared inspirations list on a 6h cron
+- **OctoLens** posts brand mentions and tagged social content
+- **Apify Inspiration Feeder** (a separate Base44 app) posts LinkedIn + X profile scrapes on a 6h cron
 
-Champions read the channel via their own Slack connector. **No champion agent holds an Apify token, an OctoLens token, or calls web search.** All scraping runs server-side in the feeders.
+The channel IS the filter. Everything in it is pre-curated inspiration content. The agent reads ALL posts and picks the best ones for this champion's draft angles.
 
-The champion's `champion_inspirations` list (from Interview answer #6) is a **filter**, not a scraping target. It boosts relevance for matching authors when reading feed messages. If the feed has no messages matching the inspirations this week, return `status: partial` — do not attempt any other source.
+**No champion agent holds an Apify token, an OctoLens token, or calls web search.** All scraping runs server-side in the feeders.
+
+## Champion's Heroes = Soft Preference, Not Filter
+
+The champion's `champion_inspirations` list (from Interview answer #6) is a **preference signal**, not a hard filter. Posts from the champion's named heroes get a relevance boost, but a strong signal from any other author in the feed can still win if it connects better to the champion's Phase 1 Slack signals and topics.
+
+**Why soft preference:** the champion's heroes are the people they admire, so echoing them feels natural. But a great post from someone they didn't name can also produce a strong draft. Don't throw away good signals just because the author isn't on the list.
 
 ## Primary Source: Shared Slack Feed
 
@@ -47,21 +53,16 @@ The messages in this channel are OctoLens mentions posted by OctoLens' Slack app
 - Extract author handle from the message text (usually in the format `@handle`, `linkedin.com/in/X`, or `twitter.com/X`)
 - Extract the original post URL (permalink or source link)
 - Extract post timestamp if present, else use Slack message ts
-- Match against the champion's `champion_inspirations` list — mentions from those specific authors get a relevance boost
-
 **Filtering:**
 - Drop mentions older than 7 days (`oldest` filter + post-parse check)
 - Drop messages with no parseable author (skip, don't fail)
-- Drop mentions flagged banned in `inspiration-seeds.json` → `banned_competitors`
 
-**Scoring:**
-- `+3` if the author matches the champion's explicit inspirations list
-- `+2` if the author matches a persona-default from `inspiration-seeds.json`
-- `+2` if the source platform is LinkedIn or X (what champions post to)
-- `+1` if engagement count is high relative to the author's baseline
-- `-1` if the mention is a retweet/share without original commentary
-
-Keep the top 5 after scoring.
+**Selection (soft preference, not hard filter):**
+- Read ALL posts from the feed. Everything there is fair game.
+- Posts from the champion's `champion_inspirations` list (Interview answer #6) get a soft relevance boost — these are the champion's heroes, echoing them feels natural
+- But any post from the feed can win if it connects strongly to the champion's Phase 1 Slack signals or topics
+- Pick the 2-3 posts with the strongest signal for draft angles — consider topic overlap with Phase 1, recency, engagement, and whether the post enables a personal-experience or echo-response angle
+- No hard author-based filtering. The channel is already curated by the Feeder.
 
 ## Fallback: Phase 1 signals only
 
@@ -76,19 +77,9 @@ Instead, return `status: partial` with `source_used: slack_feed` and an empty `t
 
 **If the feed channel is unreachable entirely** (agent not a member, channel archived, Slack outage), return `status: error` with the specific reason. Phase 4 still runs on Phase 1 signals. The error surfaces in the Phase D Summary gaps section so the operator knows to fix the Feeder.
 
-## Banned Inspirations Check
-
-Before processing any inspiration from ANY source, check the banned list in `inspiration-seeds.json` → `banned_competitors`. If an author matches:
-- Banned person directly → skip
-- Banned company pattern → skip CEO/marketing roles, allow individual engineers case-by-case
-- Banned via champion's own `style-preferences.md` → skip
-
-Never include banned inspirations in output. Log skips with reason.
-
 ## When To Skip The Phase Entirely
 
 - Slack feed has 0 messages in the last 7 days → return `status: empty`, waterfall continues with Phase 1 signals only
-- Slack feed has messages but 0 match the champion's inspirations list → return `status: partial`, same fallback
 - Slack feed unreachable (channel not joined, archived, API error) → return `status: error` with reason, waterfall continues with Phase 1 data only, operator notified via Phase D Summary gaps
 - Better partial than fabricated. Never invent posts. Never call web search to fill the gap.
 

@@ -11,15 +11,26 @@ Phase 5 of the waterfall. Scores each generated variation against the 10-point V
 
 After Phase 4 (write content), before Phase 6 (deliver). Once per variation.
 
+## HARD GATE — No draft reaches the champion without passing this
+
+This is not advisory. No draft is shown to the champion (via Slack DM or dry-run in chat) unless it has:
+1. Voice Guardian score of 9+ (10-point checklist below)
+2. Anti-AI-tells scan with 0 violations (cross-checked against `knowledge/universal-ai-tells.md`)
+3. No competitor company or CEO names anywhere in the text (echo the idea, say "someone posted" or "a founder in the space said", never the name)
+
+If any of these three fail, the draft is either rewritten or dropped. It never reaches the champion in any form.
+
 ## What It Does
 
 1. Loads the universal AI tells list from knowledge files
 2. Loads the champion's per-champion style preferences
 3. Loads the platform rules (LinkedIn vs X format)
-4. Scores the variation on each of the 10 checklist items
-5. Decides verdict: APPROVED, REWRITE, or REJECT
-6. If REWRITE, applies fixes and re-scores (max 2 attempts)
-7. Returns final verdict + score to caller
+4. Runs the anti-AI-tells scan — grep every draft against the full banned-patterns list in `universal-ai-tells.md`. Any match = automatic FAIL regardless of other scores.
+5. Checks for competitor names — any named competitor company or CEO = automatic FAIL
+6. Scores the variation on each of the 10 checklist items
+7. Decides verdict: APPROVED, REWRITE, or REJECT
+8. If REWRITE, applies fixes and re-scores (max 2 attempts)
+9. Returns final verdict + score to caller
 
 ## Required Knowledge Files
 

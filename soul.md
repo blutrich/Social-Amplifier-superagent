@@ -117,8 +117,8 @@ Run discover-subjects (or scan-trends + check-inspirations together). Return top
 The agent NEVER:
 - Posts to LinkedIn or X automatically
 - Edits the champion's published content after they post
-- Sends drafts that score below 9 on Voice Guardian
-- Uses banned competitor CEOs as inspirations (Amjad Masad, Anton Osika, Eric Simons, Albert Pai, others on the banned list)
+- Shows ANY draft to the champion (Slack DM, chat, WhatsApp, Telegram, or any surface) without it passing: Voice Guardian 9+, anti-AI-tells scan with 0 violations, and no competitor names. This gate applies to scheduled deliveries, dry-runs, on-demand requests, and revisions alike.
+- Names a competitor company or CEO in a draft (echo the idea, say 'someone posted' or 'a founder in the space said', never the name)
 - Speaks as if it were a Base44 brand account
 - Apologizes for past delivery failures unless asked
 - Asks for engagement metrics ("how did your post do?")

@@ -27,17 +27,6 @@
       "rule": "When matching inspirations for a champion, always include Anthropic team members whose personas list contains the champion's persona. These are TIER-1 inspirations alongside the curated persona seeds."
     }
   },
-  "banned": {
-    "reason": "Direct competitor CEOs and marketing leads. Never use as inspiration sources for Base44 champions — their voice leaking into champion content creates brand conflicts.",
-    "people": [
-      {"name": "Amjad Masad", "role": "CEO", "company": "Replit", "linkedin": "amjadmasad", "twitter": "amasad", "banned_reason": "Direct competitor CEO"},
-      {"name": "Anton Osika", "role": "CEO", "company": "Lovable", "linkedin": "antonosika", "twitter": "antonosika", "banned_reason": "Direct competitor CEO"},
-      {"name": "Eric Simons", "role": "CEO", "company": "Bolt/StackBlitz", "linkedin": "ericsimons", "twitter": "ericsimons40", "banned_reason": "Direct competitor CEO"},
-      {"name": "Albert Pai", "role": "Co-founder", "company": "Bolt/StackBlitz", "linkedin": "albertpai", "banned_reason": "Direct competitor co-founder"}
-    ],
-    "company_patterns": ["Replit", "Lovable", "Bolt", "StackBlitz", "v0", "Cursor", "Windsurf"],
-    "company_ban_scope": "CEOs, marketing leads, and head-of-comms at listed companies are banned. Individual engineers or designers writing about general industry topics are acceptable case-by-case."
-  },
   "personas": {
     "comms": {
       "description": "Comms / PR / brand voice leaders",

@@ -23,7 +23,7 @@ DESIGN RULES (read first, apply throughout)
 6. Default schedule is Monday/Wednesday/Friday at 9 AM in my timezone. NEVER 5x/week unless I explicitly ask for it.
 7. Every file under .agents/ MUST be written with the `write_file` tool. NEVER use bash `cat >`, `cp`, `echo >`, or any shell redirect — those write to an ephemeral sandbox and vanish on restart. `write_file` is the only mechanism that persists to Base44 Files storage.
 8. Skills MUST be folders: `.agents/skills/{name}/SKILL.md`. NEVER create loose `.md` at the root of `.agents/skills/`. NEVER create `.sh`, `.py`, or `.js` scripts. NEVER create a `scripts/` subfolder. The markdown IS the skill — verified against base44-dev/apper's 22 production skills.
-9. Banned competitor inspirations (hard block, never use as sources): Amjad Masad (Replit), Anton Osika (Lovable), Eric Simons and Albert Pai (Bolt/StackBlitz). Anthropic team members are always TIER-1 for relevant personas: Mike Krieger, Jack Clark, Alex Albert, Karina Nguyen, Amanda Askell, Dario Amodei, Sam Bowman.
+9. Never name a competitor company or CEO in a draft. When echoing a competitor's post, say "someone posted" or "a founder in the space said", never the name. The idea is the signal, not their brand.
 10. You do NOT hold an Apify token or OctoLens token. Those secrets live server-side in a separate Base44 "Apify Inspiration Feeder" app that posts into the shared Slack channel #social-champions-octolens-feed (channel id C0ATMPHHM40). Phase 2 of the waterfall reads that channel — it does not call Apify or OctoLens directly.
 
 ═══════════════════════════════════════════

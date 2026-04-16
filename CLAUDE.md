@@ -45,7 +45,7 @@ Social-Amplifier-superagent/
 │   ├── universal-ai-tells.md       # 80+ banned patterns
 │   ├── platform-rules.md           # LinkedIn + X format specs
 │   ├── waterfall-overview.md       # How the 7 phases connect
-│   ├── inspiration-seeds.json      # Persona → influencer mapping (Anthropic auto-include, competitors banned)
+│   ├── inspiration-seeds.json      # Persona → influencer mapping (Anthropic auto-include)
 │   └── champion-tone-template.md   # Template for per-champion voice profile
 ├── skills/
 │   ├── search-slack-context.md     # Phase 1
@@ -93,18 +93,9 @@ Every draft must score 9+ on the 10-point checklist before delivery. Drafts scor
 
 **Silence > weak content.** Champions trust the agent because it doesn't ship garbage. Better to skip a day than deliver a 7/10 draft.
 
-### 4. Banned Competitor Inspirations
+### 4. No Naming Competitors In Drafts
 
-These people can NEVER be used as voice inspirations for any champion:
-
-- **Amjad Masad** (CEO, Replit)
-- **Anton Osika** (CEO, Lovable)
-- **Eric Simons** (CEO, Bolt/StackBlitz)
-- **Albert Pai** (Co-founder, Bolt/StackBlitz)
-
-Banned company patterns: Replit, Lovable, Bolt, StackBlitz, v0, Cursor, Windsurf. CEOs and marketing leads at these companies are blocked. Individual engineers writing about general industry topics are case-by-case.
-
-**Always-included exception:** Anthropic team members are TIER-1 inspirations for relevant personas. Mike Krieger, Jack Clark, Alex Albert, Karina Nguyen, Amanda Askell, Dario Amodei, Sam Bowman.
+When echoing a competitor's post, never name the competitor company or CEO. Use "someone posted", "a founder in the space said", or "another builder tool" instead. The idea is the signal, not their brand. This applies to all drafts regardless of which champion they're for.
 
 ### 5. 3x/Week Default Schedule
 
@@ -250,7 +241,7 @@ Don't change the default without good reason. 3x/week is a deliberate choice bas
 - Removing the CRITICAL: Personality Override section (default Base44 chatty bot will leak through)
 - Adding contradictory principles
 - Making the agent more talkative
-- Removing hard rules ("never auto-post", "never below 9/10", "never use banned competitors")
+- Removing hard rules ("never auto-post", "never below 9/10", "never name competitors in drafts")
 
 If you change soul.md, test with a fresh Superagent install to verify the personality override still kills the default chatty bot.
 
@@ -276,7 +267,7 @@ This is referenced in multiple files. Source of truth lives in `knowledge/inspir
 | dev | 20499 (Industry Insights) | tag:product_question |
 | product | 20499 (Industry Insights) | tag:user_feedback |
 | founder | 20511 (Positive) | minXFollowers: 5000 |
-| builder_indie | 20499 (Industry Insights) | keywords: base44, lovable, replit, anthropic |
+| builder_indie | 20499 (Industry Insights) | keywords: base44, anthropic, ai builder |
 | ops | tag:industry_insights | tag:bug_report, 7-day window |
 
 These view IDs are specific to the Base44 OctoLens organization. When expanding to other orgs, the mapping needs to be re-built per-org.
@@ -327,7 +318,7 @@ Run the verify-install.md Test 6 (Voice Match Diagnosis) — the agent compares 
 
 4. **Voice profiling is not optional.** It must run during install, not as an afterthought. Skipping it leads to generic drafts that don't match the champion.
 
-5. **Banned competitors are HARD blocks.** Never accept user requests like "add Amjad Masad as inspiration". The agent should refuse and explain.
+5. **No competitor names in drafts.** When echoing a competitor's post, use "someone posted" or "a founder in the space said" — never the company or CEO name.
 
 6. **3x/week is the default for a reason.** Don't silently change to 5x/week without operator approval.
 
@@ -342,7 +333,7 @@ These are decisions the operator (Ofer Blutrich) has made in conversation. Futur
 - **Voice profiling auto-runs during install.** Don't ask permission, just do it.
 - **Schedule defaults to 3x/week.** Changed from 5x/week based on realistic champion behavior.
 - **Anthropic team always included as inspirations.** Tier-1 priority for relevant personas.
-- **Competitor CEOs are banned via shared/inspiration-seeds.json.** Hard block, no overrides.
+- **Competitor names never appear in drafts.** Echo the idea, say "someone posted" or "a founder in the space said", never the name.
 - **Image generation is Phase 5.5 of the waterfall**, auto-run for every Voice Guardian-approved draft using Base44's built-in image tool. No API key required.
 - **LinkedIn/X scraping happens server-side in the Apify Inspiration Feeder app.** Champion Superagents never hold an Apify token. They read the shared `#social-champions-octolens-feed` channel that the Feeder posts into.
 - **Personal champion data is gitignored.** Real profiles, content history, and eval workspaces never go into the public repo.

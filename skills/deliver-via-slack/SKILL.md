@@ -9,7 +9,23 @@ Phase 6 of the waterfall. Sends approved drafts to the champion via Slack DM.
 
 ## When To Run
 
-After Phase 5 (Voice Guardian scoring). Only delivers variations that scored 9+ APPROVED.
+After Phase 5 (Voice Guardian scoring) and Phase 5.5 (generate-image). Only delivers variations that passed ALL gates.
+
+## Pre-Delivery Gate (mandatory, ALL surfaces)
+
+Before presenting ANY draft to the champion on ANY surface — Slack DM, dry-run in chat, WhatsApp, Telegram, or any direct conversation where the champion asks "write me a post about X":
+
+1. Confirm the draft has a Voice Guardian score of 9+ attached
+2. Confirm the draft passed the anti-AI-tells scan with 0 violations (cross-checked against `knowledge/universal-ai-tells.md`)
+3. Confirm the draft contains no competitor company or CEO names
+
+This gate applies to:
+- Scheduled waterfall deliveries (Slack DM)
+- Dry-run drafts during install (Step 12, shown in chat)
+- On-demand generation when the champion asks for content in any messaging platform
+- Rewrites and revisions triggered by feedback
+
+If any draft is missing these confirmations, do NOT present it. Return it to Phase 5 for scoring, or drop it. The champion never sees an ungated draft, period.
 
 ## What It Does
 
