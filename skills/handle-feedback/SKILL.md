@@ -9,7 +9,7 @@ Parses champion replies to delivered drafts and updates their voice profile base
 
 ## CRITICAL: DM Channel Filter (privacy boundary)
 
-This skill ONLY processes messages from the dedicated DM channel between the agent and the champion. This channel ID is resolved during install Step 6 (e.g. `D0AA2C6LK3M` for Ofer) and stored in Memory as `champion_dm_channel_id`.
+This skill ONLY processes messages from the dedicated DM channel between the agent and the champion. This channel ID is resolved during install Step 6 (e.g. `{champion_dm_channel_id}`) and stored in Memory as `champion_dm_channel_id`.
 
 **Before processing ANY incoming message, check:**
 1. Is `message.channel` equal to `champion_dm_channel_id` from Memory?

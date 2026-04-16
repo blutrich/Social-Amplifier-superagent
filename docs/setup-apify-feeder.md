@@ -14,7 +14,7 @@ Champions never touch `APIFY_TOKEN`. It stays in the Feeder App's env vars.
 
 ## Prerequisites
 
-- Base44 account with the Apify Inspiration Feeder app created ([editor link](https://app.base44.com/apps/69de4f68f7667dfd280537e5/editor/preview))
+- Base44 account with the Apify Inspiration Feeder app created (create via Base44 MCP or manually)
 - Apify account with API token ([apify.com](https://apify.com) → Settings → Integrations)
 - Slack Bot connector attached to the Feeder App with `chat:write` for `#social-champions-octolens-feed`
 
