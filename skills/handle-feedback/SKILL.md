@@ -203,4 +203,4 @@ feedback_result:
 
 The Superagent's Memory stores all feedback events. Over time, this becomes the champion's evolving voice profile. After 30+ feedback events, the agent's understanding of the champion is far more nuanced than the original onboarding profile.
 
-The Memory is the source of truth for "what does this champion actually want?" — more than the static knowledge files. Always check Memory before generating new content.
+The Memory is the source of truth for "what does this champion actually want?" — more than the static rules files. Always check Memory before generating new content.

@@ -15,10 +15,10 @@ I expect exactly 8 SKILL.md files under .agents/skills/{name}/SKILL.md and nothi
 
 **If failed:** Re-run Step 5 of BOOTSTRAP-PROMPT.md using `write_file` — do NOT use bash `cat >`, `cp`, or shell redirects. Those write to an ephemeral sandbox.
 
-## Test 2: Knowledge Files Loaded
+## Test 2: Rules Files Loaded
 
 ```
-What knowledge files do you have? Confirm you can read:
+What rules files do you have under .agents/rules/? Confirm you can read:
 - voice-guardian-checklist.md
 - universal-ai-tells.md
 - platform-rules.md
@@ -26,9 +26,9 @@ What knowledge files do you have? Confirm you can read:
 - inspiration-seeds.json
 ```
 
-**Expected:** Agent lists all 5 files and can quote from them.
+**Expected:** Agent lists all 5 files and can quote from them. Because they live in `.agents/rules/`, Base44 auto-loads them into the system prompt on every run — no explicit read is required.
 
-**If failed:** Re-upload via **Brain → Knowledge → Knowledge files**.
+**If failed:** Re-upload via **Brain → Rules → Rules files** (or re-run BOOTSTRAP Step 4 with `write_file`).
 
 ## Test 3: Connectors Working
 
@@ -157,7 +157,7 @@ Create the scheduled task per the instructions in tasks/daily-waterfall.md
 After the auto-pilot finishes and the dry-run drafts are displayed, the agent MUST send a final Summary message with five mandatory sections. Confirm the message you received contains:
 
 1. **What I learned about you** — voice summary (1 sentence), 3 real sample quotes from your Slack, banned words list, inspirations loaded
-2. **What's installed** — 8 skills, 7 knowledge files, Slack connected
+2. **What's installed** — 8 skills, 7 rules files, Slack connected
 3. **What's scheduled** — Mon/Wed/Fri at 9am your timezone, first real delivery date, feedback listener active
 4. **How to correct me** — reply with 1/2/3, "not my style", "too formal", or paste past LinkedIn posts
 5. **What I can't do yet** — explicit list of gaps (e.g. "no LinkedIn scraping configured — voice confidence 7/10 until you share 2-3 past posts")

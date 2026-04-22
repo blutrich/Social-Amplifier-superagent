@@ -226,7 +226,7 @@ Two distinct flows. Onboarding happens **once**. The waterfall runs **Mon/Wed/Fr
 
 ### Key properties of both flows
 
-- **Onboarding** touches everything once: secrets, skills, knowledge, schedule, verify, dry-run, summary
+- **Onboarding** touches everything once: secrets, skills, rules, schedule, verify, dry-run, summary
 - **Daily** is read-only on secrets/config — it only reads what onboarding wrote
 - **Silence is acceptable** at every decision point: Phase 5 can drop the day, champion can ignore the DM, feedback is optional
 - **No per-day operator involvement** — once onboarded, the agent is invisible until the champion chooses to engage
@@ -240,12 +240,12 @@ Two distinct flows. Onboarding happens **once**. The waterfall runs **Mon/Wed/Fr
 | `BOOTSTRAP-PROMPT.md` | First message to send your new Superagent |
 | `identity-template.md` | Name, persona, communication style (you fill in) |
 | `soul.md` | Behavioral principles (same for all champions) |
-| `knowledge/voice-guardian-checklist.md` | 10-point quality scoring rubric |
-| `knowledge/universal-ai-tells.md` | 80+ banned patterns (em dashes, "thrilled to announce", etc.) |
-| `knowledge/platform-rules.md` | LinkedIn + X format specs |
-| `knowledge/waterfall-overview.md` | How the 7 phases connect |
-| `knowledge/inspiration-seeds.json` | Persona → influencer mapping with banned competitors |
-| `knowledge/champion-tone-template.md` | Template for YOUR personal tone-of-voice file |
+| `rules/voice-guardian-checklist.md` | 10-point quality scoring rubric (auto-loaded into system prompt) |
+| `rules/universal-ai-tells.md` | 80+ banned patterns (em dashes, "thrilled to announce", etc.) |
+| `rules/platform-rules.md` | LinkedIn + X format specs |
+| `rules/waterfall-overview.md` | How the 7 phases connect |
+| `rules/inspiration-seeds.json` | Persona → influencer mapping with banned competitors |
+| `rules/champion-tone-template.md` | Template for YOUR personal tone-of-voice file |
 | `skills/*.md` | The 7 skills implementing the waterfall phases |
 | `tasks/daily-waterfall.md` | Scheduled task description |
 | `tasks/feedback-on-reply.md` | Reply trigger description |

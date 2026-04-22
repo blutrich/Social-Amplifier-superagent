@@ -16,7 +16,7 @@ After Phase 5 (Voice Guardian scoring) and Phase 5.5 (generate-image). Only deli
 Before presenting ANY draft to the champion on ANY surface — Slack DM, dry-run in chat, WhatsApp, Telegram, or any direct conversation where the champion asks "write me a post about X":
 
 1. Confirm the draft has a Voice Guardian score of 9+ attached
-2. Confirm the draft passed the anti-AI-tells scan with 0 violations (cross-checked against `knowledge/universal-ai-tells.md`)
+2. Confirm the draft passed the anti-AI-tells scan with 0 violations (cross-checked against `rules/universal-ai-tells.md`)
 3. Confirm the draft contains no competitor company or CEO names
 
 This gate applies to:

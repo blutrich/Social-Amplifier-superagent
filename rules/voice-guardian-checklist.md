@@ -23,19 +23,24 @@ For each item, read the criteria, inspect the draft, and assign PASS or FAIL wit
 **PASS examples:** "We use AI to make workflows simpler", "A different kind of experience", "Faster and more accurate"
 
 ### 2. No AI structure
-**Check:** Does the content use banned structural patterns — em dashes (unless champion has `em_dashes: allow`), rule-of-three cadence, self-narration, contrast framing, transition openers, significance inflation?
+**Check:** Does the content use banned structural patterns — **em dashes** (unless champion has `em_dashes: allow`), rule-of-three cadence, self-narration, contrast framing, transition openers, significance inflation?
+
+**EM DASH HARD RULE:** Any em dash character (—, U+2014) is an automatic FAIL on this item UNLESS the champion's profile has `em_dashes: allow`. Detect it with a literal character scan, not intent analysis. Em dashes are the #1 AI tell in 2026 — the Voice Guardian must flag every instance.
+
+Also reject: en dashes used stylistically (–), double hyphens used as em dashes (--). Only ASCII hyphens in compound words are safe.
 
 **FAIL examples:**
 - "Fast. Simple. Powerful." (rule of three)
-- "It's not just a tool — it's a revolution" (contrast framing + em dash)
+- "It's not just a tool — it's a revolution" (em dash — auto-fail)
 - "Here's why this matters:" (self-narration)
 - "A testament to modern design" (significance inflation)
 
 **PASS examples:**
 - "Here's what it does: it makes you faster at the stuff you already do."
 - "It's a tool. It helps you build things."
+- "Not just a tool. A teammate." (period, not em dash)
 
-**Override:** Per-champion `style-preferences.md` can allow em dashes if the champion uses them naturally. Always check the champion's preferences before failing on em dashes alone.
+**Override:** Per-champion `style-preferences.md` with `em_dashes: allow` bypasses the hard rule. Default is `deny`. When in doubt, deny.
 
 ### 3. No AI phrases
 **Check:** Does the content use common AI-generated phrases from the universal banned list — "I'm thrilled to announce", "In today's fast-paced world", "Let that sink in", "This changes everything"?

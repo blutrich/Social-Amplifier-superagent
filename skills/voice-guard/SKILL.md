@@ -15,14 +15,14 @@ After Phase 4 (write content), before Phase 6 (deliver). Once per variation.
 
 This is not advisory. No draft is shown to the champion (via Slack DM or dry-run in chat) unless it has:
 1. Voice Guardian score of 9+ (10-point checklist below)
-2. Anti-AI-tells scan with 0 violations (cross-checked against `knowledge/universal-ai-tells.md`)
+2. Anti-AI-tells scan with 0 violations (cross-checked against `rules/universal-ai-tells.md`)
 3. No competitor company or CEO names anywhere in the text (echo the idea, say "someone posted" or "a founder in the space said", never the name)
 
 If any of these three fail, the draft is either rewritten or dropped. It never reaches the champion in any form.
 
 ## What It Does
 
-1. Loads the universal AI tells list from knowledge files
+1. Loads the universal AI tells list (already in the system prompt — it lives in `.agents/rules/universal-ai-tells.md`, auto-loaded on every run)
 2. Loads the champion's per-champion style preferences
 3. Loads the platform rules (LinkedIn vs X format)
 4. Runs the anti-AI-tells scan — grep every draft against the full banned-patterns list in `universal-ai-tells.md`. Any match = automatic FAIL regardless of other scores.
@@ -32,7 +32,9 @@ If any of these three fail, the draft is either rewritten or dropped. It never r
 8. If REWRITE, applies fixes and re-scores (max 2 attempts)
 9. Returns final verdict + score to caller
 
-## Required Knowledge Files
+## Required Rules Files
+
+All of these live under `.agents/rules/` and are auto-loaded into the system prompt every run — no explicit Read needed unless you're verifying.
 
 - `voice-guardian-checklist.md` (the 10-point checklist with criteria)
 - `universal-ai-tells.md` (banned words, phrases, structures)

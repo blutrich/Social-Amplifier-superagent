@@ -13,7 +13,7 @@ After `search-slack-context` (Phase 1), before `load-voice` (Phase 3).
 
 ## Source: Shared Slack Feed Channel
 
-Read `knowledge/inspiration-seeds.json` → `social_amplifier_feed` for the channel config.
+Read `rules/inspiration-seeds.json` → `social_amplifier_feed` for the channel config.
 
 **The only source is** `#social-champions-octolens-feed` (channel ID `C0ATMPHHM40`). Two feeder systems post into it server-side:
 - **OctoLens** posts brand mentions and tagged social content

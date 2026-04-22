@@ -38,7 +38,7 @@ Social-Amplifier-superagent/
 ├── verify-install.md               # 11-test verification checklist
 ├── docs/
 │   └── setup-apify-feeder.md       # One-time operator runbook for the server-side Apify Feeder app
-├── knowledge/
+├── rules/                          # Base44 auto-loads every file here into the system prompt
 │   ├── voice-guardian-checklist.md # 10-point quality scoring rubric
 │   ├── universal-ai-tells.md       # 80+ banned patterns
 │   ├── platform-rules.md           # LinkedIn + X format specs
@@ -132,7 +132,7 @@ If there's no signal, say so and skip the day.
 
 1. **Clone-repo install (recommended):** Champion creates a new Superagent, sends one bootstrap message that tells the Superagent to clone this repo and configure itself. Total time: ~5 minutes.
 
-2. **Manual install:** Champion uploads Knowledge files, creates custom skills one-by-one, and configures connectors via the Base44 UI. Total time: ~10 minutes.
+2. **Manual install:** Champion uploads Rules files, creates custom skills one-by-one, and configures connectors via the Base44 UI. Total time: ~10 minutes.
 
 The bootstrap prompt template is in `BOOTSTRAP-PROMPT.md`. It includes filled-in examples for Ofer (marketing persona) and Dor (comms persona), plus per-persona OctoLens view mappings.
 
@@ -148,17 +148,17 @@ The bootstrap prompt template is in `BOOTSTRAP-PROMPT.md`. It includes filled-in
 
 Each skill is a FOLDER containing a single `SKILL.md` with YAML frontmatter (name + description with trigger phrases). Pure markdown — **no `.sh`/`.py`/`.js` scripts, no `scripts/` subfolder**. All 22 production apper skills follow this exact shape.
 
-**Knowledge files** are loose markdown at `.agents/knowledge/{name}.md`.
+**Rules files** are loose markdown at `.agents/rules/{name}.md`. Base44 auto-loads every file in `.agents/rules/` into the system prompt on each run, which is why this folder is named `rules/` and not `knowledge/` — the name is the load contract, not a label.
 
 When the bootstrap says "clone the repo and configure yourself", the Superagent will:
 - ✅ Set Brain → Soul, Identity, User from the markdown files
 - ✅ Connect Slack via OAuth
-- ❌ NOT auto-install knowledge files to `.agents/knowledge/`
+- ❌ NOT auto-install rules files to `.agents/rules/`
 - ❌ NOT auto-create the skill folders under `.agents/skills/`
 
 **The bootstrap prompt must explicitly tell the Superagent to:**
 
-1. For each file in `knowledge/`, copy to `.agents/knowledge/{name}.md`
+1. For each file in `rules/`, copy to `.agents/rules/{name}.md`
 2. For each folder in `skills/`, create `.agents/skills/{name}/SKILL.md` with the verbatim body (frontmatter already present in source)
 3. NEVER create scripts. NEVER flatten to loose `.md` at `.agents/skills/` root — file-vs-folder collision breaks run_skill
 4. Verify with `find /app/.agents/skills -type f` — expect exactly 8 `SKILL.md` files and nothing else
@@ -196,18 +196,18 @@ This is wrong for the Social Amplifier agent. The `soul.md` file has a `CRITICAL
 5. Update CLAUDE.md (this file) repo structure section
 6. Test the install with a fresh Superagent before committing
 
-### When adding a new knowledge file
+### When adding a new rules file
 
-1. Create `knowledge/{name}.md`
-2. Add to BOOTSTRAP-PROMPT.md Step 5 list
+1. Create `rules/{name}.md`
+2. Add to BOOTSTRAP-PROMPT.md Step 4 list
 3. Add to README.md file reference
 4. Add to verify-install.md Test 2 expected list
 5. Update CLAUDE.md repo structure
-6. Make sure the file is referenced by at least one skill (otherwise why does it exist?)
+6. Remember: every file in `.agents/rules/` is auto-loaded into the system prompt each run, so keep it small and high-signal
 
 ### When changing universal AI-tells
 
-`knowledge/universal-ai-tells.md` is the source of truth for banned patterns. When adding a new banned word/phrase/structure:
+`rules/universal-ai-tells.md` is the source of truth for banned patterns. When adding a new banned word/phrase/structure:
 
 1. Add to the appropriate section (verbs, adjectives, phrases, structures)
 2. Mark `[HARD BAN]` if it's never overridable per-champion
@@ -256,7 +256,7 @@ If you change soul.md, test with a fresh Superagent install to verify the person
 
 ## Per-Persona OctoLens View Mapping
 
-This is referenced in multiple files. Source of truth lives in `knowledge/inspiration-seeds.json`. Quick reference:
+This is referenced in multiple files. Source of truth lives in `rules/inspiration-seeds.json`. Quick reference:
 
 | Persona | Primary OctoLens Views | Secondary Filter |
 |---------|----------------------|------------------|

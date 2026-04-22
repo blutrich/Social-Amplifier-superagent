@@ -1,6 +1,6 @@
 # Bootstrap Prompt
 
-The exact message a champion pastes into a new Base44 Superagent to install Social Amplifier. It is **self-contained** — every rule, every step, every template lives inline. The agent never has to clone the repo before starting the Interview; it only clones once during Step 1 to fetch the skill and knowledge files.
+The exact message a champion pastes into a new Base44 Superagent to install Social Amplifier. It is **self-contained** — every rule, every step, every template lives inline. The agent never has to clone the repo before starting the Interview; it only clones once during Step 1 to fetch the skill and rules files.
 
 **For operators:** the single code block below (section "The Install Message") is what you give to a new champion. They paste it verbatim into a fresh Superagent chat. No placeholders, no edits, no "fill in your name first" — the agent asks for personal info in Phase B.
 
@@ -37,7 +37,7 @@ Hey! I'm about to install Social Amplifier for you. This takes ~5–7 minutes en
 
 1. I clone the bundle repo and apply my new personality (Soul)
 2. I set my identity and save who you are
-3. I install 7 knowledge files and 8 skills into my Files panel using write_file (never bash)
+3. I install 7 rules files and 8 skills into my Files panel using write_file (never bash)
 4. I connect to Slack and verify by reading your display name
 5. I auto-join #social-champions-octolens-feed so Phase 2 can read it
 6. I search your last 100 Slack messages and build your tone-of-voice profile automatically
@@ -69,7 +69,7 @@ PHASE C — AUTO-PILOT (12 steps, run after I answer)
 After I reply with my answers, store them in Memory as `champion_profile` and run these 12 steps back-to-back. No pauses, no confirmations, no chatter between steps. One "✅ Step N done" line per step.
 
 STEP 1 — CLONE REPO
-Clone https://github.com/blutrich/Social-Amplifier-superagent. Read only these files to confirm you have the right repo: README.md, soul.md, identity-template.md, knowledge/waterfall-overview.md, knowledge/inspiration-seeds.json. You do NOT need to read BOOTSTRAP-PROMPT.md from the repo — all rules are already inlined in this message you are executing.
+Clone https://github.com/blutrich/Social-Amplifier-superagent. Read only these files to confirm you have the right repo: README.md, soul.md, identity-template.md, rules/waterfall-overview.md, rules/inspiration-seeds.json. You do NOT need to read BOOTSTRAP-PROMPT.md from the repo — all rules are already inlined in this message you are executing.
 
 STEP 2 — APPLY SOUL
 Read soul.md from the clone and replace your default personality with it completely. Use update_identity to persist SOUL.md. Direct, short, factual. Apply the banned phrases rule from Design Rule #4.
@@ -77,15 +77,16 @@ Read soul.md from the clone and replace your default personality with it complet
 STEP 3 — SET IDENTITY
 Fill in identity-template.md using my Interview answers. Set your name to "{FirstName}Agent" (e.g. OferAgent, DorAgent). Persist via update_identity.
 
-STEP 4 — INSTALL KNOWLEDGE FILES (write_file only, never bash)
-For each file in the repo's knowledge/ folder, call write_file with path=.agents/knowledge/{filename} and content=verbatim file body. Files to install (all 6):
-- knowledge/voice-guardian-checklist.md
-- knowledge/universal-ai-tells.md
-- knowledge/platform-rules.md
-- knowledge/waterfall-overview.md
-- knowledge/inspiration-seeds.json
-- knowledge/champion-tone-template.md
-Verify by opening the Files panel (not bash ls). You must see all 6 files under .agents/knowledge/. If any are missing, you used bash by accident — re-run with write_file.
+STEP 4 — INSTALL RULES FILES (write_file only, never bash)
+Base44 auto-loads every file under `.agents/rules/` into the system prompt on each run. That is why these live in `rules/`, not `knowledge/` — the name is the load contract.
+For each file in the repo's rules/ folder, call write_file with path=.agents/rules/{filename} and content=verbatim file body. Files to install (all 6):
+- rules/voice-guardian-checklist.md
+- rules/universal-ai-tells.md
+- rules/platform-rules.md
+- rules/waterfall-overview.md
+- rules/inspiration-seeds.json
+- rules/champion-tone-template.md
+Verify by opening the Files panel (not bash ls). You must see all 6 files under .agents/rules/. If any are missing, you used bash by accident — re-run with write_file.
 
 STEP 5 — INSTALL SKILLS (folder format, write_file only)
 Base44 Superagent skills are FOLDERS containing a single SKILL.md with YAML frontmatter. Verified against base44-dev/apper. For each of the 8 skill folders in the repo's skills/:
@@ -111,12 +112,12 @@ Sub-step 6d: Open a DM channel with the champion (conversations.open with the ch
 If 6b fails because the channel is private or a scope is missing, note it in the Phase D Summary gaps list with the exact error and continue — Phase 2 will fall back to Phase 1 signals only (NEVER to web search).
 
 STEP 7 — PROFILE VOICE AUTOMATICALLY (not optional)
-Search Slack for my last 50–100 substantive messages from:@{slack_handle_from_interview}. Analyze across 8 dimensions: sentence length, vocabulary register, em dashes, emoji frequency, structure preferences, humor frequency, language mix, named references. Generate my tone-of-voice file using knowledge/champion-tone-template.md structure, filled with real observations and 3 verbatim sample quotes. Save via write_file to .agents/knowledge/{firstname}-tone-of-voice.md.
+Search Slack for my last 50–100 substantive messages from:@{slack_handle_from_interview}. Analyze across 8 dimensions: sentence length, vocabulary register, em dashes, emoji frequency, structure preferences, humor frequency, language mix, named references. Generate my tone-of-voice file using rules/champion-tone-template.md structure, filled with real observations and 3 verbatim sample quotes. Save via write_file to .agents/rules/{firstname}-tone-of-voice.md.
 
 STEP 8 — LOAD INSPIRATIONS (names only, NO content fetching)
 From Interview answer #6:
 - If I listed specific names/handles, save them to Memory as `champion_inspirations` array with platform + handle per entry
-- If I typed "skip", read knowledge/inspiration-seeds.json, pick 3–5 entries matching my persona (plus Anthropic defaults), save to Memory
+- If I typed "skip", read rules/inspiration-seeds.json, pick 3–5 entries matching my persona (plus Anthropic defaults), save to Memory
 
 DO NOT web-search for the inspirations' recent posts during this step. DO NOT call any scraper. DO NOT create an inspiration-activity.md scratchpad. The only output of Step 8 is the Memory `champion_inspirations` array with names and handles — nothing else.
 
@@ -184,7 +185,7 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 
 ### What's installed
 - 8 skills in .agents/skills/: search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback
-- 7 knowledge files in .agents/knowledge/ (6 universal + your tone-of-voice)
+- 7 rules files in .agents/rules/ (6 universal + your tone-of-voice) — auto-loaded into my system prompt every run
 - Slack connected as {slack_handle}
 - Joined #social-champions-octolens-feed: {yes/no}
 - Verify tests passed: {X}/{total}

@@ -19,11 +19,11 @@ When told "create a custom skill", agents often just write a file to `.agents/sk
 **Send this to your Superagent:**
 
 ```
-The install is partially broken. Files may exist in .agents/skills/ but Brain → Integrations → Skills shows 0 skills. They were never actually registered. Same likely true for Knowledge.
+The install is partially broken. Files may exist in .agents/skills/ but Brain → Integrations → Skills shows 0 skills. They were never actually registered. Same likely true for Rules.
 
 Fix this in exact order:
 
-1. RUN ls .agents/skills/ AND ls .agents/knowledge/ and show me the output. Confirm if files exist on disk.
+1. RUN ls .agents/skills/ AND ls .agents/rules/ and show me the output. Confirm if files exist on disk.
 
 2. REGISTER SKILLS IN BRAIN. Files on disk are NOT the same as skills in Brain → Integrations → Skills. Try these mechanisms in order until one works:
 
@@ -40,47 +40,47 @@ Fix this in exact order:
 
 3. AFTER each registration attempt, verify the skill appears in Brain → Integrations → Skills (the UI tab). Don't trust file-on-disk presence. Verify the Brain UI count.
 
-4. REPEAT FOR KNOWLEDGE FILES. The 6 files need to appear in Brain → Knowledge → Knowledge files. Use the chat-based knowledge upload command, then any registration tool, then the API.
+4. REPEAT FOR RULES FILES. The 6 files need to appear in Brain → Rules → Rules files. Base44 auto-loads `.agents/rules/` into the system prompt, so once they're on disk AND registered, they load automatically — use the chat-based rules upload command, then any registration tool, then the API.
 
 5. Final verification:
    - Brain → Integrations → Skills count = 8
-   - Brain → Knowledge → Knowledge files count = 6 (or 7 with voice profile)
+   - Brain → Rules → Rules files count = 6 (or 7 with voice profile)
    - .agents/skills/ disk count = 8
-   - .agents/knowledge/ disk count = 6
+   - .agents/rules/ disk count = 6
 
 6. If Brain UI count still does not match disk count, tell me the SPECIFIC error and which Base44 mechanism failed. Do not say "done" until Brain UI shows the right counts.
 
-Do not recreate files that already exist on disk. Just register them in Brain. Use checkmark markers per skill and per knowledge file.
+Do not recreate files that already exist on disk. Just register them in Brain. Use checkmark markers per skill and per rules file.
 
 Execute now.
 ```
 
 ---
 
-## Recovery 2: Knowledge Files Not Loaded
+## Recovery 2: Rules Files Not Loaded
 
-**Symptom:** You installed skills but when the agent runs the waterfall, it says "I don't have access to voice-guardian-checklist.md" or similar missing file errors.
+**Symptom:** You installed skills but when the agent runs the waterfall, it says "I don't have access to voice-guardian-checklist.md" or similar missing file errors. Or the rules aren't being pulled into the system prompt automatically.
 
 **Send this:**
 
 ```
-Knowledge files aren't loaded. Fix this now:
+Rules files aren't loaded. Fix this now:
 
-From the cloned repo, read these 6 files and add each one to your Knowledge files in Brain:
+From the cloned repo, read these 6 files and add each one to your Rules files in Brain:
 
-1. knowledge/voice-guardian-checklist.md
-2. knowledge/universal-ai-tells.md
-3. knowledge/platform-rules.md
-4. knowledge/waterfall-overview.md
-5. knowledge/inspiration-seeds.json
-6. knowledge/champion-tone-template.md
+1. rules/voice-guardian-checklist.md
+2. rules/universal-ai-tells.md
+3. rules/platform-rules.md
+4. rules/waterfall-overview.md
+5. rules/inspiration-seeds.json
+6. rules/champion-tone-template.md
 
 For each file:
 - Read the contents
-- Save to .agents/knowledge/ with the same filename
-- Add to Brain → Knowledge → Knowledge files (via your upload mechanism)
+- Save to .agents/rules/ with the same filename (Base44 auto-loads this directory into the system prompt on every run — that's the load contract)
+- Add to Brain → Rules → Rules files (via your upload mechanism)
 
-After loading, verify you can query each one. Test: "Read voice-guardian-checklist.md and tell me the 10 checklist items." You should be able to answer.
+After loading, verify you can quote each one WITHOUT an explicit Read call — they should already be in your system prompt. Test: "Without reading the file, list the 10 items from voice-guardian-checklist.md." You should be able to answer.
 
 Report ✅ per file.
 ```
@@ -155,7 +155,7 @@ Execute voice profiling now. Don't ask, just do it:
 
 3. Generate my tone-of-voice file using the champion-tone-template.md structure. Fill in every section with real observations from my messages.
 
-4. Save it as "ofer-tone-of-voice.md" in your Knowledge files OR append to Memory as a saved fact.
+4. Save it as "ofer-tone-of-voice.md" in your Rules files OR append to Memory as a saved fact.
 
 5. Show me the summary:
    - Voice in one sentence
@@ -216,19 +216,19 @@ If that also hangs, the issue is the skill file itself didn't load correctly. Ru
 
 **Symptom:** Too much is wrong to fix piece by piece.
 
-**Option A: Rebuild skills and knowledge in place (keeps your Superagent)**
+**Option A: Rebuild skills and rules in place (keeps your Superagent)**
 
 ```
-Wipe .agents/skills/ and .agents/knowledge/ and start fresh:
+Wipe .agents/skills/ and .agents/rules/ and start fresh:
 
 1. Delete all files in .agents/skills/ (if any)
-2. Delete all files in .agents/knowledge/ (if any)
+2. Delete all files in .agents/rules/ (if any)
 3. Clone the repo again: https://github.com/blutrich/Social-Amplifier-superagent
-4. Execute Steps 5 and 6 of BOOTSTRAP-PROMPT.md (install knowledge + create skills)
+4. Execute Steps 4 and 5 of BOOTSTRAP-PROMPT.md (install rules + create skills)
 5. Run verify-install.md tests
 6. Report results
 
-My Soul, Identity, User, and connectors are already correct. Only skills and knowledge need rebuilding.
+My Soul, Identity, User, and connectors are already correct. Only skills and rules need rebuilding.
 ```
 
 **Option B: Delete the Superagent and create a new one**
@@ -251,7 +251,7 @@ Run the verify-install.md tests from the cloned repo. Execute tests 1, 2, 3, 4, 
 
 Expected results:
 - Test 1 (Skills): 7-8 skills listed
-- Test 2 (Knowledge files): 6 files listed and readable
+- Test 2 (Rules files): 6 files listed and readable
 - Test 3 (Connectors): Slack connected, OctoLens optional
 - Test 4 (Voice profile): champion-tone-of-voice loaded with real data
 - Test 5 (Dry-run): 2-3 drafts in chat

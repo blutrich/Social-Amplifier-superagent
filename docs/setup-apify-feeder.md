@@ -106,7 +106,7 @@ When a champion leaves or changes inspirations:
 
 ## Banned Handles
 
-Never add these to ChampionInspiration (hard block, see `knowledge/inspiration-seeds.json`):
+Never add these to ChampionInspiration (hard block, see `rules/inspiration-seeds.json`):
 - Amjad Masad (Replit CEO)
 - Anton Osika (Lovable CEO)
 - Eric Simons (Bolt/StackBlitz CEO)
@@ -117,7 +117,7 @@ The Feeder App should validate against this list before inserting new rows.
 ## Maintenance
 
 - Monthly: review `InspirationPost` cost vs. channel value, delete stale records
-- Quarterly: refresh banned competitors list from `knowledge/inspiration-seeds.json`
+- Quarterly: refresh banned competitors list from `rules/inspiration-seeds.json`
 - When onboarding new personas: add default seed inspirations from the persona defaults
 
 ---
