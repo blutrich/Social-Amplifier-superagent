@@ -37,11 +37,11 @@ Hey! I'm about to install Social Amplifier for you. This takes ~5–7 minutes en
 
 1. I clone the bundle repo and apply my new personality (Soul)
 2. I set my identity and save who you are
-3. I install 7 rules files and 8 skills into my Files panel using write_file (never bash)
+3. I install 7 rules files and 9 skills into my Files panel using write_file (never bash)
 4. I connect to Slack and verify by reading your display name
 5. I auto-join #social-champions-octolens-feed so Phase 2 can read it
 6. I search your last 100 Slack messages and build your tone-of-voice profile automatically
-7. I create a scheduled waterfall (Mon/Wed/Fri 9am your timezone) and a feedback listener on your DM replies
+7. I create a scheduled waterfall (Mon/Wed/Fri 9am) + a bi-daily discussion monitor (Mon-Fri 8am/6pm) + a feedback listener on your DM replies
 8. I run a dry-run in this chat and show you 3 real LinkedIn drafts before any real delivery
 9. I send you a Summary: what I learned about you, what's installed, what's scheduled, any gaps
 10. First real delivery lands in your Slack DM on {NEXT_SCHEDULED_DATE} at 9am (nearest Mon/Wed/Fri after today)
@@ -89,11 +89,11 @@ For each file in the repo's rules/ folder, call write_file with path=.agents/rul
 Verify by opening the Files panel (not bash ls). You must see all 6 files under .agents/rules/. If any are missing, you used bash by accident — re-run with write_file.
 
 STEP 5 — INSTALL SKILLS (folder format, write_file only)
-Base44 Superagent skills are FOLDERS containing a single SKILL.md with YAML frontmatter. Verified against base44-dev/apper. For each of the 8 skill folders in the repo's skills/:
+Base44 Superagent skills are FOLDERS containing a single SKILL.md with YAML frontmatter. Verified against base44-dev/apper. For each of the 9 skill folders in the repo's skills/:
 1. Read skills/{name}/SKILL.md from the clone
 2. Call write_file with path=.agents/skills/{name}/SKILL.md and content=verbatim body (frontmatter already present)
 3. Do NOT create scripts/ subfolders. Do NOT create .sh/.py/.js files. Do NOT flatten to loose .md at .agents/skills/ root.
-Skills to install (all 8):
+Skills to install (all 9):
 - search-slack-context
 - check-inspirations
 - load-voice
@@ -102,7 +102,8 @@ Skills to install (all 8):
 - generate-image
 - deliver-via-slack
 - handle-feedback
-Verify: run `find /app/.agents/skills -type f` — expect exactly 8 SKILL.md paths and nothing else. Then test one: `run_skill load-voice` must return the SKILL.md body without a "no executable script" error.
+- monitor-discussions
+Verify: run `find /app/.agents/skills -type f` — expect exactly 9 SKILL.md paths and nothing else. Then test one: `run_skill load-voice` must return the SKILL.md body without a "no executable script" error.
 
 STEP 6 — CONNECT SLACK AND JOIN FEED CHANNEL (three sub-steps, all reportable)
 Sub-step 6a: Connect the Slack connector via OAuth. Verify by reading my profile and confirming the display name matches Interview answer #1. Report "✅ Slack OAuth: {display_name}".
@@ -135,6 +136,19 @@ AFTER creating the task, read back its actual schedule configuration and verify:
 - Time MUST be 9:00 AM in the champion's timezone.
 If the days are wrong, DELETE the task and recreate it with the correct days. Do not proceed until the schedule reads Monday/Wednesday/Friday.
 Report: "✅ Step 9 done — schedule verified: {actual_days} at {actual_time} {timezone}"
+
+STEP 9.5 — CREATE DISCUSSION MONITOR SCHEDULE
+Create a second scheduled task named "Discussion Monitor":
+- Schedule: Monday through Friday at 8:00 AM AND 6:00 PM in my timezone (2x per weekday)
+- Frequency: twice daily on weekdays
+- Action when the task runs: execute monitor-discussions skill
+  - Read #social-champions-octolens-feed for the last 12 hours
+  - Score posts for relevance and reply authority
+  - Pick top 2-3 posts (must score 5+/9 to qualify)
+  - Draft a 1-4 sentence reply suggestion per post in my voice — no em dashes, no generic self-intros
+  - If 2+ posts qualify, send Slack DM with links + reply copy; if fewer than 2, skip silently
+  - NEVER use thread_ts — send all messages to my Slack user_id only
+Report: "✅ Step 9.5 done — Discussion Monitor scheduled: Mon-Fri 8am and 6pm {timezone}"
 
 STEP 10 — CREATE FEEDBACK TRIGGER (with DM channel filter — privacy boundary)
 Create a Slack connector trigger on `message.im` events. The trigger MUST include this filter:
@@ -184,7 +198,7 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 - Inspirations loaded: {3–5 names from Interview answer #6 or persona default}
 
 ### What's installed
-- 8 skills in .agents/skills/: search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback
+- 9 skills in .agents/skills/: search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback, monitor-discussions
 - 7 rules files in .agents/rules/ (6 universal + your tone-of-voice) — auto-loaded into my system prompt every run
 - Slack connected as {slack_handle}
 - Joined #social-champions-octolens-feed: {yes/no}
@@ -193,8 +207,9 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 ### What's scheduled
 - Social Amplifier Waterfall: {READ THE ACTUAL TASK SCHEDULE AND REPORT THE REAL DAYS — do not echo "Mon/Wed/Fri" from this template. If the actual task says Sun/Tue/Thu or any other wrong days, flag it as a gap in "What I can't do yet" and fix it before sending this Summary.}
 - First real delivery: {next Mon/Wed/Fri date after today, computed from the ACTUAL task schedule}
+- Discussion Monitor: Mon–Fri 8am and 6pm {timezone} — sends you links to relevant posts with suggested reply copy
 - Feedback listener: active on your Slack DM replies
-- 3x/week is the default. Reply to me with "change to 5x/week" or "change to 2x/week Tue/Thu" anytime.
+- 3x/week waterfall is the default. Reply to me with "change to 5x/week" or "change to 2x/week Tue/Thu" anytime.
 
 ### How to correct me
 - Reply to any DM with "1", "2", or "3" to mark that draft approved

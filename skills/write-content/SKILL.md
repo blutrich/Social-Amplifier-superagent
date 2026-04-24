@@ -87,7 +87,9 @@ For every variation, the writer must:
 - Use the champion's actual sentence patterns from voice_context
 - Stay within word count limits from style preferences (LinkedIn 150-300, X 280 chars)
 - Respect banned words (universal + champion-specific add list)
-- Respect structural rules (em dashes, rule of three, hashtags, emojis)
+- Respect structural rules (rule of three, hashtags, emojis)
+- NEVER use em dashes (`—`, `–`, `--` as em dash) — hard ban, no exceptions, no per-champion override
+- NEVER open with a generic self-description of the champion's role ("I'm in marketing", "As someone in software development", "As a [role]", "Working in [field]", "In my role as") — hard ban. Open with the specific observation, fact, or story instead
 - Ground in a specific real source — never write from generic LLM knowledge
 - Avoid angles already used in the last 7 days (per voice_context.recent_history)
 
@@ -100,7 +102,8 @@ for each variation:
   if any banned word from style_preferences.banned_words_add appears: regenerate
   if "thrilled to announce" or similar HARD-BAN phrase: regenerate
   if hashtag count > champion's hashtag_max: regenerate
-  if em dash count > 2 AND em_dashes:deny: regenerate
+  if ANY em dash present — character scan for U+2014 (—), U+2013 (–), or double-hyphen (--) used as em dash: regenerate immediately. Em dash is a HARD BAN with zero tolerance. "em_dashes:allow" is no longer a valid override.
+  if post opens with a generic self-description — "I'm in [field]", "As someone in", "As a [role]", "Working in [sector]", "In my role as", "Having spent N years in": regenerate immediately. This is a HARD BAN regardless of champion preferences.
   if word count below word_count_min: regenerate
   if word count above word_count_max: trim
 ```

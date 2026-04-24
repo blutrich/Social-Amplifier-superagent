@@ -8,10 +8,10 @@ Send your Superagent in chat:
 
 ```
 Run: find /app/.agents/skills -type f
-I expect exactly 8 SKILL.md files under .agents/skills/{name}/SKILL.md and nothing else. No loose .md files at the root. No scripts/ subfolders.
+I expect exactly 9 SKILL.md files under .agents/skills/{name}/SKILL.md and nothing else. No loose .md files at the root. No scripts/ subfolders.
 ```
 
-**Expected:** 8 paths, one per skill (search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback).
+**Expected:** 9 paths, one per skill (search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback, monitor-discussions).
 
 **If failed:** Re-run Step 5 of BOOTSTRAP-PROMPT.md using `write_file` — do NOT use bash `cat >`, `cp`, or shell redirects. Those write to an ephemeral sandbox.
 

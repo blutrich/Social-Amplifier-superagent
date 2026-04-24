@@ -53,9 +53,11 @@ Social-Amplifier-superagent/
 │   ├── voice-guard/SKILL.md            # Phase 5
 │   ├── generate-image/SKILL.md         # Phase 5.5 (Base44 built-in image tool)
 │   ├── deliver-via-slack/SKILL.md      # Phase 6
-│   └── handle-feedback/SKILL.md        # Reply parsing + voice profile updates
+│   ├── handle-feedback/SKILL.md        # Reply parsing + voice profile updates
+│   └── monitor-discussions/SKILL.md    # Bi-daily engagement monitor (reply suggestions)
 └── tasks/
     ├── daily-waterfall.md          # Scheduled task: Mon/Wed/Fri 9am local (3x/week default)
+    ├── monitor-discussions.md      # Scheduled task: Mon-Fri 8am + 6pm (bi-daily engagement)
     └── feedback-on-reply.md        # Connector trigger: when champion replies to DM
 ```
 

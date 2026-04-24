@@ -23,15 +23,16 @@ For each item, read the criteria, inspect the draft, and assign PASS or FAIL wit
 **PASS examples:** "We use AI to make workflows simpler", "A different kind of experience", "Faster and more accurate"
 
 ### 2. No AI structure
-**Check:** Does the content use banned structural patterns — **em dashes** (unless champion has `em_dashes: allow`), rule-of-three cadence, self-narration, contrast framing, transition openers, significance inflation?
+**Check:** Does the content use banned structural patterns — **em dashes**, rule-of-three cadence, self-narration, contrast framing, transition openers, significance inflation?
 
-**EM DASH HARD RULE:** Any em dash character (—, U+2014) is an automatic FAIL on this item UNLESS the champion's profile has `em_dashes: allow`. Detect it with a literal character scan, not intent analysis. Em dashes are the #1 AI tell in 2026 — the Voice Guardian must flag every instance.
+**EM DASH HARD RULE (no override):** Any em dash character (`—`, U+2014) is an automatic FAIL on this item. Detect it with a literal character scan, not intent analysis. Also fail en dashes used stylistically (`–`, U+2013) and double-hyphens standing in for em dashes (`--`). Only ASCII hyphens inside compound words (`well-known`, `long-term`) are safe. No per-champion override.
 
-Also reject: en dashes used stylistically (–), double hyphens used as em dashes (--). Only ASCII hyphens in compound words are safe.
+**GENERIC SELF-INTRO HARD RULE:** Openers that re-describe the champion's job ("I'm in marketing", "As someone in software development", "In my role as PM", etc.) are an automatic FAIL. See `universal-ai-tells.md` → Generic self-description openers. Exception: posts whose SUBJECT is the champion's role/career path.
 
 **FAIL examples:**
 - "Fast. Simple. Powerful." (rule of three)
 - "It's not just a tool — it's a revolution" (em dash — auto-fail)
+- "I'm in marketing, and here's what I've seen..." (generic self-intro)
 - "Here's why this matters:" (self-narration)
 - "A testament to modern design" (significance inflation)
 
@@ -39,8 +40,7 @@ Also reject: en dashes used stylistically (–), double hyphens used as em dashe
 - "Here's what it does: it makes you faster at the stuff you already do."
 - "It's a tool. It helps you build things."
 - "Not just a tool. A teammate." (period, not em dash)
-
-**Override:** Per-champion `style-preferences.md` with `em_dashes: allow` bypasses the hard rule. Default is `deny`. When in doubt, deny.
+- "Watched 3 launches flop this month. The one thing they shared..." (specific observation, no role re-intro)
 
 ### 3. No AI phrases
 **Check:** Does the content use common AI-generated phrases from the universal banned list — "I'm thrilled to announce", "In today's fast-paced world", "Let that sink in", "This changes everything"?
@@ -89,6 +89,9 @@ This is a holistic judgment, not a rule. Ask:
 **Check:** Does the content match the target platform's format rules (see `platform-rules.md`)?
 
 **LinkedIn:** 150-300 words, short paragraphs, hook in first 2 lines
+
+**High-density exception:** If a LinkedIn post is 80-149 words AND contains 3 or more specific concrete details (named numbers, named external services, named features, or named timeframes), score this item PASS. Dense builder posts with high specificity outperform padded posts at word count. Do not pad a post just to hit 150 words — that produces worse content. Only apply this exception when specificity is genuinely high; vague short posts still fail.
+
 **X:** 280 chars max, or numbered thread max 7 tweets
 
 ### 9. No link/emoji violations

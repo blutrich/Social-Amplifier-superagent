@@ -159,13 +159,19 @@ Slack supports markdown via the `markdown=true` flag:
 
 ```
 mcp__plugin_slack_slack__slack_send_message(
-  channel_id="{cached_dm_channel_or_user_id}",
+  channel_id="{champion.slack_user_id}",
   text="{formatted template text}",
   markdown=true
 )
 ```
 
-Cache the returned channel_id back to the champion profile for next time.
+**CRITICAL — always send to the champion's Slack USER ID (format: `U0XXXXXXX`), never a cached channel ID.**
+
+When you pass a user ID, Slack routes it to the bot-DM with that user and triggers push notifications. Sending to a channel ID derived from the user's "message yourself" DM silently drops notifications — the message arrives but the champion gets no alert.
+
+Do NOT cache and reuse a channel_id for outgoing messages. The user_id is stable; use it directly every time.
+
+**CRITICAL — NEVER use the `thread_ts` parameter.** All agent messages are new top-level DMs, never thread replies. The agent is READ-ONLY in all Slack channels and shared spaces. It ONLY writes to champion DMs via the user_id above.
 
 ## Idempotency
 
@@ -233,3 +239,6 @@ message_ts: 1776055326.645449
 - Never retry failed sends immediately
 - Never send the same content twice (idempotency check)
 - No internal metrics in champion-facing messages (don't mention scores)
+- NEVER use `thread_ts` — every message is a new top-level DM, never a thread reply
+- NEVER write to Slack channels — the agent is read-only in all channels; DMs only
+- ALWAYS use champion's Slack user_id for outgoing messages, not a cached channel_id

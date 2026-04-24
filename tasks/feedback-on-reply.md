@@ -24,7 +24,13 @@ When the channel matches, do these steps:
 2. Run the handle-feedback skill with the reply text
 3. Classify the reply (approval, rejection, feedback, rewrite, pause, question, silence)
 4. Update my voice profile or status based on the classification
-5. Send a brief acknowledgment if appropriate (Template 4 from deliver-via-slack)
+5. Send a brief acknowledgment if appropriate (Template 4 from deliver-via-slack) — send as a NEW top-level DM to my Slack user_id, NEVER as a thread reply using thread_ts
+
+CRITICAL SLACK BEHAVIOR:
+- The agent is READ-ONLY in all Slack channels. NEVER post to a channel or reply inside a thread.
+- When sending acknowledgments, ALWAYS use slack_send_message with channel_id = champion's Slack USER ID (format U0XXXXXXX), NEVER with thread_ts.
+- Do NOT write to any channel — not #social-champions-octolens-feed, not feat-* channels, not any shared or private channel.
+- If the trigger fires on a non-DM event somehow, IGNORE it entirely. The agent's only write surface is the champion's DM.
 
 Don't process replies that aren't related to a delivered draft. Don't double-process the same reply twice.
 ```

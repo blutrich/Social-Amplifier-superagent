@@ -69,13 +69,17 @@ Each scores PASS (1) or FAIL (0). Total: 0-10.
 
 Universal rules apply to all champions. But per-champion overrides relax SOME rules:
 
-- `em_dashes: allow` → item 2 ignores em dashes
 - `emoji_max: 5` → item 9 allows up to 5 emojis instead of 2
 - `hashtag_max: 0` → item 9 fails ANY hashtag
 - `banned_words_add: ["frankly"]` → item 1 also fails on "frankly"
 - `banned_words_remove: ["deep dive"]` → item 1 ignores "deep dive" if champion uses it naturally
 
-Hard-ban items (corporate phrases, engagement bait, contrast framing) cannot be overridden. Always fail on these regardless of preferences.
+Hard-ban items cannot be overridden. These always fail regardless of champion preferences:
+- Corporate announcement phrases ("I'm thrilled to announce")
+- Engagement bait ("Thoughts?")
+- Contrast framing ("It's not just X, it's Y")
+- **Em dashes** (`—`, `–`, `--`) — no `em_dashes: allow` override anymore; the rule is absolute
+- **Generic self-description openers** ("I'm in marketing", "As someone in tech") — no override
 
 ## Rewrite Patterns
 
@@ -85,7 +89,10 @@ When a variation scores 7-8 and needs rewriting:
 Replace each banned verb/adjective with a specific concrete word from the champion's actual vocabulary. Never replace with another generic AI word.
 
 ### Fix em dashes (item 2)
-Check champion preferences first. If `em_dashes: deny`, replace each em dash with comma, period, or parentheses based on context.
+Replace every em dash (`—`, `–`, `--`) with a comma, period, or parentheses based on context. No override — this rule is absolute. If the draft has em dashes, it cannot ship until they're all gone.
+
+### Fix generic self-intros (item 2)
+Delete any opener that re-describes the champion's job ("I'm in marketing, and...", "As someone in software development..."). Replace with the specific observation, number, or story that would have come next. The reader already knows the champion's role from their profile — the post should start with content, not credentials.
 
 ### Fix rule of three (item 2)
 Add a 4th item to break the triple, OR remove the structure entirely and write a single concrete sentence.

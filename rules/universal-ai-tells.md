@@ -1,6 +1,6 @@
 # Universal AI Tells
 
-Patterns that make text sound AI-generated regardless of who's writing. These are the baseline rules every draft must pass. Per-champion preferences can relax SOME of these (em dashes, emoji count, specific words), but the items marked **[HARD BAN]** cannot be overridden.
+Patterns that make text sound AI-generated regardless of who's writing. These are the baseline rules every draft must pass. Per-champion preferences can relax SOME of these (emoji count, specific words), but the items marked **[HARD BAN]** cannot be overridden.
 
 ## Banned Verbs
 
@@ -72,12 +72,33 @@ significantly, dramatically, fundamentally, incredibly, remarkably, ultimately, 
 - "I'll be real with you..."
 - "Between you and me..."
 
+### Generic self-description openers **[HARD BAN]**
+Real people don't re-introduce their job in every post — their profile already says it. These openers read as ChatGPT trying to establish credibility.
+
+- "I'm in marketing, and..."
+- "I'm in software development, so..."
+- "As someone in tech..."
+- "As a [founder/marketer/engineer/PM]..."
+- "Working in [SaaS/AI/startups]..."
+- "In my role as..."
+- "Having spent [N] years in [field]..."
+
+**Why banned:** a champion posts 2-5 times per week. If every post opens with their job title, the feed reads like a résumé. Open with the specific fact, observation, or story instead — the reader infers your role from the content.
+
+**FAIL:** "I'm in marketing, and I've seen a lot of launches fail because..."
+**PASS:** "Watched 3 launches flop this month. The one thing they shared..."
+
+**FAIL:** "As someone in software development, AI tooling has changed how..."
+**PASS:** "Haven't opened a blank file in 3 weeks. Here's what that does to how you think about code..."
+
+**Exception:** A post whose SUBJECT is explicitly the champion's career path or role identity (e.g. "I switched from PM to engineer — here's what surprised me") may open with role context because the role IS the topic. This is rare.
+
 ## Banned Structures
 
-### Em Dashes
-**Default: banned.** Em dashes are one of the strongest AI tells. Use commas, periods, or parentheses instead.
+### Em Dashes **[HARD BAN]**
+Em dashes are the single strongest AI tell in 2026. Use commas, periods, or parentheses instead. No per-champion override — even champions who use them in real writing should not have them in amplifier-generated content, because mixed human/AI-looking text in a single feed is more suspicious than either alone.
 
-**Override:** Per-champion `em_dashes: allow` can enable them when the champion uses them naturally in real writing.
+**Detect:** literal character scan for `—` (U+2014). Also flag en dashes used stylistically (`–`, U+2013) and double-hyphens `--` standing in for em dashes. Only ASCII hyphens inside compound words (`well-known`, `long-term`) are safe.
 
 ### Rule of Three
 **Default: banned.** Triples like "Fast. Simple. Powerful." or "One workspace. Unlimited builders. No friction."
@@ -108,11 +129,12 @@ More than 2 hashtags. Default max is 2. Champion preferences can set to 0.
 |------|---------|-------------|--------------|
 | Banned verbs | Banned | ❌ | N/A |
 | Banned adjectives | Banned | ❌ | N/A |
-| Em dashes | Banned | ✅ | `em_dashes: allow` |
+| Em dashes | Banned | ❌ HARD BAN | N/A |
 | Rule of three | Banned | ❌ | N/A |
 | Corporate announcement phrases | Banned | ❌ HARD BAN | N/A |
 | Engagement bait | Banned | ❌ HARD BAN | N/A |
 | Contrast framing | Banned | ❌ HARD BAN | N/A |
+| Generic self-description openers | Banned | ❌ HARD BAN | N/A |
 | Emoji count | Max 2 | ✅ | `emoji_max: N` (max 5) |
 | Hashtag count | Max 2 | ✅ | `hashtag_max: N` |
 | Bulleted lists | Allowed | ✅ | `bullets: heavy/light/none` |

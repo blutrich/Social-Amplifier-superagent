@@ -25,6 +25,8 @@ Format specs for each supported platform. Used by item 8 of the Voice Guardian c
 - Wall of text with no line breaks
 - External links in main post body (kills reach ~50%)
 - More than 2 hashtags
+- Generic self-intro openers ("I'm in marketing...", "As someone in tech...") — the reader already knows the author's role from their profile
+- Em dashes (`—`) anywhere in the post — #1 AI tell in 2026, hard-banned
 
 ### Emoji
 - Maximum 2 per post
@@ -57,6 +59,8 @@ Format specs for each supported platform. Used by item 8 of the Voice Guardian c
 - Pure promotion
 - Too many hashtags (max 1-2)
 - Engagement bait
+- Generic self-intro openers ("I'm in marketing...", "As someone in tech...")
+- Em dashes (`—`) — hard-banned
 
 ### Emoji
 - Maximum 2-3 per tweet
