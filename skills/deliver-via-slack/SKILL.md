@@ -165,6 +165,11 @@ mcp__plugin_slack_slack__slack_send_message(
 )
 ```
 
+**CRITICAL — Pre-send identity check (mandatory):**
+Before calling `slack_send_message`, verify that `champion.slack_user_id` matches a `slack_user_id` stored in the champion's profile file. Never derive or interpolate a user ID from Slack search results at send time — only use the ID that was validated during onboarding and written to the profile.
+
+If `champion.slack_user_id` is not in the known champions list → **ABORT. Do not send. Log the error.**
+
 **CRITICAL — always send to the champion's Slack USER ID (format: `U0XXXXXXX`), never a cached channel ID.**
 
 When you pass a user ID, Slack routes it to the bot-DM with that user and triggers push notifications. Sending to a channel ID derived from the user's "message yourself" DM silently drops notifications — the message arrives but the champion gets no alert.

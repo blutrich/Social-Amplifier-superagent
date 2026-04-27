@@ -7,16 +7,23 @@ description: Parses champion replies to delivered drafts and updates their voice
 
 Parses champion replies to delivered drafts and updates their voice profile based on the feedback.
 
-## CRITICAL: DM Channel Filter (privacy boundary)
+## CRITICAL: Two-Gate Filter (privacy boundary + sender identity)
 
-This skill ONLY processes messages from the dedicated DM channel between the agent and the champion. This channel ID is resolved during install Step 6 (e.g. `{champion_dm_channel_id}`) and stored in Memory as `champion_dm_channel_id`.
+The Slack connector's `message.im` trigger fires on ALL DM activity visible to the connected account — including DMs from colleagues, randoms, and Slackbot. Without strict filtering, the agent reads and responds to other people's conversations. That is a privacy violation, not just a bug.
 
-**Before processing ANY incoming message, check:**
-1. Is `message.channel` equal to `champion_dm_channel_id` from Memory?
-2. If YES → process the feedback normally
-3. If NO → **IGNORE COMPLETELY. Do not read, do not respond, do not classify, do not log.** This is someone else's private conversation. The agent has no business being there.
+**Gate 1 — Sender identity (check FIRST, most important):**
+Does `message.user` equal the champion's `slack_user_id` stored in Memory?
+- YES → proceed to Gate 2
+- NO → **STOP. Do not read the message, do not respond, do not classify, do not log.** Someone other than the champion sent this. It is none of the agent's business.
 
-**Why this exists:** The Slack connector's `message.im` trigger fires on ALL DM activity visible to the connected account, not just the agent-champion channel. Without this filter, the agent interferes with the champion's private DM conversations with other people. This is a privacy violation, not just a bug.
+**Gate 2 — Channel identity (belt-and-suspenders):**
+Does `message.channel` equal `champion_dm_channel_id` from Memory?
+- YES → process the feedback normally
+- NO → **STOP. Same as above — ignore completely.**
+
+Both gates must pass. If either fails, the agent does nothing and logs nothing.
+
+**Thread guard:** If `message.thread_ts` is present and `message.thread_ts != message.ts`, this is a reply inside a thread. **STOP.** The agent never reads or responds to thread replies, even from the champion. The agent is read-only in all threads.
 
 ## When To Run
 

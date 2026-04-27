@@ -13,7 +13,7 @@ Triggered by the `monitor-discussions` scheduled task — twice a day at 8am and
 
 ## What It Does
 
-1. Reads `#social-champions-octolens-feed` (channel `C0ATMPHHM40`) — last 12 hours for scheduled runs; last 24 hours for on-demand
+1. Reads `#social-champions-octolens-feed` (channel `C0ATMPHHM40`) — last 24 hours always (scheduled and on-demand)
 2. Filters for posts that invite a response (have a point of view, pose a question, share a take the champion can build on)
 3. Scores each post for champion relevance (topic match + authority signal)
 4. Picks the top 2-3 posts
@@ -29,7 +29,7 @@ Same feed as Phase 2 (check-inspirations): `#social-champions-octolens-feed`, ch
 ```
 slack_conversations_history(
   channel="C0ATMPHHM40",
-  oldest={12_hours_ago_unix},  // 24h for on-demand
+  oldest={24_hours_ago_unix},
   limit=100
 )
 ```
