@@ -79,13 +79,14 @@ Fill in identity-template.md using my Interview answers. Set your name to "{Firs
 
 STEP 4 — INSTALL RULES FILES (write_file only, never bash)
 Base44 auto-loads every file under `.agents/rules/` into the system prompt on each run. That is why these live in `rules/`, not `knowledge/` — the name is the load contract.
-For each file in the repo's rules/ folder, call write_file with path=.agents/rules/{filename} and content=verbatim file body. Files to install (all 6):
+For each file in the repo's rules/ folder, call write_file with path=.agents/rules/{filename} and content=verbatim file body. Files to install (all 7):
 - rules/voice-guardian-checklist.md
 - rules/universal-ai-tells.md
 - rules/platform-rules.md
 - rules/waterfall-overview.md
 - rules/inspiration-seeds.json
 - rules/champion-tone-template.md
+- rules/slack-privacy-guard.md
 Verify by opening the Files panel (not bash ls). You must see all 6 files under .agents/rules/. If any are missing, you used bash by accident — re-run with write_file.
 
 STEP 5 — INSTALL SKILLS (folder format, write_file only)
@@ -142,7 +143,7 @@ Create a second scheduled task named "Discussion Monitor":
 - Schedule: Monday through Friday at 8:00 AM AND 6:00 PM in my timezone (2x per weekday)
 - Frequency: twice daily on weekdays
 - Action when the task runs: execute monitor-discussions skill
-  - Read #social-champions-octolens-feed for the last 12 hours
+  - Read #social-champions-octolens-feed for the last 24 hours
   - Score posts for relevance and reply authority
   - Pick top 2-3 posts (must score 5+/9 to qualify)
   - Draft a 1-4 sentence reply suggestion per post in my voice — no em dashes, no generic self-intros
@@ -150,13 +151,28 @@ Create a second scheduled task named "Discussion Monitor":
   - NEVER use thread_ts — send all messages to my Slack user_id only
 Report: "✅ Step 9.5 done — Discussion Monitor scheduled: Mon-Fri 8am and 6pm {timezone}"
 
-STEP 10 — CREATE FEEDBACK TRIGGER (with DM channel filter — privacy boundary)
-Create a Slack connector trigger on `message.im` events. The trigger MUST include this filter:
-- BEFORE processing any message, check if `message.channel` matches `champion_dm_channel_id` from Memory (saved in Step 6d)
-- If it matches → run handle-feedback skill to classify the reply ("1"/"2"/"3"/"not my style"/"too formal"/etc.) and update the voice profile
-- If it does NOT match → IGNORE COMPLETELY. Do not read, respond, classify, or log. That is someone else's private conversation.
+STEP 10 — CREATE FEEDBACK TRIGGER (two-gate privacy boundary — BOTH gates required)
+Create a Slack connector trigger on `message.im` events. The trigger MUST enforce TWO independent checks before doing anything:
 
-This filter is a privacy boundary. Without it, the agent interferes with the champion's private DM conversations with other people. The trigger fires on ALL DMs visible to the Slack connector, not just the agent-champion channel. The filter is what makes it safe.
+GATE 1 — SENDER IDENTITY (check first, most important):
+- Is `message.user` equal to `champion_slack_user_id` from Memory?
+- YES → proceed to Gate 2
+- NO → STOP IMMEDIATELY. Do not read the message. Do not respond. Do not classify. Do not log. This is a message from someone who is not the champion. The agent has no business interacting with them.
+
+GATE 2 — CHANNEL IDENTITY (belt-and-suspenders):
+- Is `message.channel` equal to `champion_dm_channel_id` from Memory (saved in Step 6d)?
+- YES → proceed to handle-feedback skill
+- NO → STOP IMMEDIATELY. Same rule as Gate 1 failure.
+
+THREAD GUARD (applies after both gates pass):
+- If `message.thread_ts` is present AND `message.thread_ts != message.ts`, this is a reply inside a thread.
+- STOP. The agent never reads or responds to thread replies, even from the champion.
+
+Only if ALL three checks pass → run handle-feedback skill to classify the reply ("1"/"2"/"3"/"not my style"/"too formal"/etc.) and update the voice profile.
+
+WHY THIS MATTERS: The `message.im` trigger fires on ALL DMs visible to the connected Slack account — including DMs from colleagues, random people, and Slackbot. A channel-only check is insufficient because anyone who DMs the bot gets a different channel ID, not the champion's. The sender check is the primary guard. Without it, the agent responds to strangers — a privacy violation, not just a bug.
+
+Save both `champion_slack_user_id` and `champion_dm_channel_id` to Memory during Step 6. Both are required for this trigger to work correctly.
 
 STEP 11 — SILENT VERIFY
 Silently run the verify-install tests. Collect pass/fail per test in memory — DO NOT send a message yet. The results feed into Phase D.
@@ -199,7 +215,7 @@ After the dry-run drafts are displayed, send exactly ONE final message with thes
 
 ### What's installed
 - 9 skills in .agents/skills/: search-slack-context, check-inspirations, load-voice, write-content, voice-guard, generate-image, deliver-via-slack, handle-feedback, monitor-discussions
-- 7 rules files in .agents/rules/ (6 universal + your tone-of-voice) — auto-loaded into my system prompt every run
+- 8 rules files in .agents/rules/ (7 universal + your tone-of-voice) — auto-loaded into my system prompt every run
 - Slack connected as {slack_handle}
 - Joined #social-champions-octolens-feed: {yes/no}
 - Verify tests passed: {X}/{total}
