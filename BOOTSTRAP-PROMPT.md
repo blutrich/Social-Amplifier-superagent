@@ -50,7 +50,7 @@ After you answer these 6 questions I will not ask anything else until drafts lan
 
 1) What's your full name?
 2) What's your role and team? (e.g. "AI Product Builder at Base44 Marketing")
-3) Which persona fits you best? Pick one: comms / marketing / dev / product / founder / builder_indie / ops
+3) Which persona fits you best? Pick one: comms / marketing / dev / product / founder / builder_indie / ops / sales
 4) What's your timezone? (e.g. Asia/Jerusalem, America/New_York)
 5) What's your Slack username? (e.g. @oferbl)
 6) Who do you admire on LinkedIn or X? List 3–5 names, handles, or URLs — I'll learn from their style. Type "skip" if you want me to pick based on your persona.
